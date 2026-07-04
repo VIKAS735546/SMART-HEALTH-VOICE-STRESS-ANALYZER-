@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SJBIT Attendance App</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f0f4f8; --white:#fff; --surface:#f8fafc; --border:#e2e8f0; --border2:#cbd5e1;
+  --primary:#1e40af; --primary-light:#3b82f6; --primary-glow:rgba(59,130,246,0.15);
+  --accent:#0ea5e9; --success:#10b981; --success-bg:#ecfdf5;
+  --warning:#f59e0b; --warning-bg:#fffbeb;
+  --danger:#ef4444; --danger-bg:#fef2f2;
+  --text:#0f172a; --text2:#334155; --muted:#64748b; --muted2:#94a3b8;
+  --sidebar-w:265px; --font:'Plus Jakarta Sans',sans-serif; --mono:'JetBrains Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+.screen{display:none;min-height:100vh}
+.screen.active{display:flex}
+
+/* LOGIN */
+#screen-login{flex-direction:row;background:#fff}
+.login-left{width:45%;background:linear-gradient(145deg,#1e3a8a,#1e40af 40%,#2563eb);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem;position:relative;overflow:hidden}
+.login-left::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,rgba(96,165,250,.2),transparent 50%),radial-gradient(circle at 80% 80%,rgba(147,197,253,.15),transparent 50%)}
+.login-left-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:36px 36px}
+.login-brand{position:relative;z-index:1;text-align:center}
+.login-logo-ring{width:90px;height:90px;border-radius:24px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:2.4rem;margin:0 auto 1.5rem;backdrop-filter:blur(10px)}
+.login-brand h1{color:#fff;font-size:1.9rem;font-weight:800;letter-spacing:-.03em}
+.login-brand p{color:rgba(255,255,255,.65);font-size:.9rem;margin-top:.4rem}
+.login-pills{position:relative;z-index:1;display:flex;flex-direction:column;gap:1rem;margin-top:3rem;width:100%;max-width:300px}
+.login-pill{display:flex;align-items:center;gap:.9rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:.9rem 1.2rem;color:#fff;font-size:.88rem;backdrop-filter:blur(10px)}
+.pill-icon{font-size:1.2rem}.pill-text{font-weight:600}.pill-sub{font-size:.75rem;color:rgba(255,255,255,.55);margin-top:1px}
+.login-right{flex:1;display:flex;align-items:center;justify-content:center;padding:3rem;background:#fff;overflow-y:auto}
+.login-form-wrap{width:100%;max-width:420px}
+.login-form-wrap h2{font-size:1.75rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.4rem}
+.login-form-wrap>p{color:var(--muted);font-size:.9rem;margin-bottom:2rem}
+.role-selector{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:1.75rem}
+.role-btn{border:2px solid var(--border2);border-radius:12px;padding:.9rem .5rem;cursor:pointer;text-align:center;background:var(--surface);transition:all .2s;font-family:var(--font)}
+.role-btn:hover{border-color:var(--primary-light)}.role-btn.selected{border-color:var(--primary);background:var(--primary-glow)}
+.role-btn .role-icon{font-size:1.5rem;display:block;margin-bottom:.3rem}
+.role-btn .role-name{font-size:.78rem;font-weight:700;color:var(--text2)}
+.form-group{margin-bottom:1.1rem}
+.form-label{display:block;font-size:.82rem;font-weight:700;color:var(--text2);margin-bottom:.5rem;letter-spacing:.02em}
+.form-input{width:100%;padding:.8rem 1rem;border:2px solid var(--border);border-radius:10px;font-family:var(--font);font-size:.92rem;color:var(--text);background:var(--surface);outline:none;transition:border-color .2s}
+.form-input:focus{border-color:var(--primary-light);background:#fff}
+.form-input-icon{position:relative}.form-input-icon .form-input{padding-left:2.8rem}
+.input-icon{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);font-size:1rem}
+.login-btn{width:100%;padding:.9rem;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-weight:700;font-size:.95rem;border:none;cursor:pointer;font-family:var(--font);transition:transform .2s,box-shadow .2s;box-shadow:0 4px 20px rgba(30,64,175,.35);display:flex;align-items:center;justify-content:center;gap:.5rem;margin-top:.5rem}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(30,64,175,.45)}
+.demo-creds{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.2rem;margin-top:1.25rem}
+.demo-creds p{font-size:.78rem;font-weight:700;color:var(--muted);margin-bottom:.6rem;letter-spacing:.06em;text-transform:uppercase}
+.cred-row{display:flex;justify-content:space-between;font-size:.82rem;color:var(--text2);padding:.2rem 0}
+.cred-row code{font-family:var(--mono);font-size:.78rem;color:var(--primary);font-weight:600;cursor:pointer}
+.cred-row code:hover{text-decoration:underline}
+
+/* SIDEBAR */
+#screen-app{flex-direction:row}
+.sidebar{width:var(--sidebar-w);min-height:100vh;background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;z-index:50;overflow-y:auto}
+.sidebar-header{padding:1.25rem 1.25rem .9rem;border-bottom:1px solid var(--border)}
+.sidebar-logo{display:flex;align-items:center;gap:.75rem}
+.logo-icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--primary-light));display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:#fff;flex-shrink:0}
+.logo-text{font-size:1rem;font-weight:800;letter-spacing:-.02em;line-height:1.2}
+.logo-text span{color:var(--primary)}
+.logo-sub{font-size:.65rem;color:var(--muted);font-weight:500}
+.sidebar-user{margin:.75rem 1.25rem;padding:.9rem;background:var(--surface);border-radius:12px;border:1px solid var(--border)}
+.user-avatar-row{display:flex;align-items:center;gap:.75rem}
+.user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;color:#fff;flex-shrink:0}
+.user-name{font-size:.85rem;font-weight:700}.user-role{font-size:.72rem;color:var(--muted)}
+.user-badge{margin-left:auto;font-size:.65rem;font-weight:700;padding:.2rem .5rem;border-radius:4px;background:var(--primary-glow);color:var(--primary)}
+.sidebar-nav{flex:1;padding:.5rem .75rem}
+.nav-section-label{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2);padding:.5rem .5rem .35rem}
+.nav-item{display:flex;align-items:center;gap:.75rem;padding:.65rem .75rem;border-radius:9px;cursor:pointer;font-size:.875rem;font-weight:600;color:var(--text2);margin-bottom:2px;transition:all .15s;border:none;background:transparent;width:100%;font-family:var(--font);text-align:left}
+.nav-item:hover{background:var(--surface);color:var(--text)}
+.nav-item.active{background:var(--primary-glow);color:var(--primary)}
+.nav-icon{font-size:1rem;width:20px;text-align:center;flex-shrink:0}
+.nav-badge{margin-left:auto;font-size:.65rem;font-weight:700;background:var(--danger);color:#fff;padding:.15rem .45rem;border-radius:10px}
+.sidebar-footer{padding:1rem 1.25rem;border-top:1px solid var(--border)}
+.logout-btn{display:flex;align-items:center;gap:.6rem;font-size:.83rem;font-weight:600;color:var(--muted);cursor:pointer;padding:.5rem 0;border:none;background:none;font-family:var(--font);transition:color .2s;width:100%}
+.logout-btn:hover{color:var(--danger)}
+
+/* MAIN */
+.main-content{margin-left:var(--sidebar-w);flex:1;min-height:100vh;display:flex;flex-direction:column}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40}
+.topbar-left h2{font-size:1.1rem;font-weight:800;letter-spacing:-.02em}
+.topbar-left p{font-size:.78rem;color:var(--muted);margin-top:1px}
+.topbar-right{display:flex;align-items:center;gap:1rem}
+.topbar-time{font-family:var(--mono);font-size:.85rem;color:var(--primary);font-weight:600;background:var(--primary-glow);padding:.35rem .75rem;border-radius:8px}
+.notif-btn{width:36px;height:36px;border-radius:9px;border:1px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;position:relative;transition:background .2s}
+.notif-btn:hover{background:var(--border)}
+.notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--danger);border:1.5px solid var(--white)}
+.page-view{display:none;padding:2rem;flex:1}
+.page-view.active{display:block}
+
+/* CARDS / GRIDS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-bottom:2rem}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:1.4rem 1.5rem;transition:transform .2s,box-shadow .2s}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.07)}
+.stat-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem}
+.stat-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+.stat-trend{font-size:.75rem;font-weight:700;padding:.2rem .5rem;border-radius:6px}
+.trend-up{background:var(--success-bg);color:var(--success)}.trend-down{background:var(--danger-bg);color:var(--danger)}
+.stat-num{font-size:2rem;font-weight:800;letter-spacing:-.03em;line-height:1}
+.stat-label{font-size:.8rem;color:var(--muted);margin-top:.3rem;font-weight:500}
+.stat-sub{font-size:.72rem;color:var(--muted2);margin-top:.3rem}
+.card{background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.card-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:.9rem;font-weight:800;letter-spacing:-.01em}
+.card-sub{font-size:.75rem;color:var(--muted);margin-top:2px}
+.card-body{padding:1.5rem}
+.card-action{font-size:.78rem;font-weight:700;color:var(--primary);cursor:pointer;background:var(--primary-glow);padding:.35rem .9rem;border-radius:8px;border:none;font-family:var(--font);transition:opacity .2s}
+.card-action:hover{opacity:.8}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem}
+.col-span2{grid-column:span 2}
+
+/* TIMETABLE */
+.timetable{display:flex;flex-direction:column;gap:.6rem}
+.tt-item{display:flex;align-items:center;gap:1rem;padding:.85rem 1rem;border-radius:10px;border:1px solid var(--border);background:var(--surface)}
+.tt-item.done{opacity:.7}.tt-item.current{background:#f0f9ff;border-color:#bae6fd}
+.tt-time{font-family:var(--mono);font-size:.72rem;color:var(--muted);width:80px;flex-shrink:0}
+.tt-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.tt-info{flex:1}.tt-subject{font-size:.875rem;font-weight:700}
+.tt-detail{font-size:.72rem;color:var(--muted);margin-top:2px}
+.tt-status{font-size:.72rem;font-weight:700;padding:.2rem .65rem;border-radius:6px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* TABLE */
+.att-table{width:100%;border-collapse:collapse}
+.att-table th{text-align:left;font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;padding:.6rem 1rem;background:var(--surface);border-bottom:1px solid var(--border)}
+.att-table td{padding:.85rem 1rem;border-bottom:1px solid var(--border);font-size:.875rem}
+.att-table tr:last-child td{border-bottom:none}
+.att-table tr:hover td{background:var(--surface)}
+.student-cell{display:flex;align-items:center;gap:.75rem}
+.s-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;flex-shrink:0}
+.s-name{font-weight:600;font-size:.875rem}.s-id{font-size:.72rem;color:var(--muted)}
+.badge{display:inline-flex;align-items:center;gap:.3rem;font-size:.72rem;font-weight:700;padding:.25rem .6rem;border-radius:6px}
+.badge-green{background:var(--success-bg);color:var(--success)}
+.badge-red{background:var(--danger-bg);color:var(--danger)}
+.badge-yellow{background:var(--warning-bg);color:var(--warning)}
+.badge-blue{background:var(--primary-glow);color:var(--primary)}
+.badge-orange{background:#fff7ed;color:#c2410c}
+.badge::before{content:'●';font-size:.45rem}
+.method-tag{font-size:.7rem;font-weight:700;font-family:var(--mono);padding:.2rem .5rem;border-radius:5px;background:var(--surface);color:var(--muted);border:1px solid var(--border)}
+
+/* MANUAL */
+.manual-grid{display:flex;flex-direction:column;gap:.6rem}
+.manual-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:.75rem;align-items:center;padding:.9rem 1.25rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:.875rem;transition:background .15s}
+.manual-row:hover{background:#fff;border-color:var(--border2)}
+.manual-row.header{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;background:transparent;border-color:transparent;padding-bottom:.4rem}
+.att-radio{padding:.25rem .65rem;border-radius:6px;font-size:.75rem;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:transparent;font-family:var(--font);transition:all .15s}
+.att-radio.p:hover,.att-radio.p.sel{background:var(--success-bg);border-color:var(--success);color:var(--success)}
+.att-radio.a:hover,.att-radio.a.sel{background:var(--danger-bg);border-color:var(--danger);color:var(--danger)}
+.att-radio.l:hover,.att-radio.l.sel{background:var(--warning-bg);border-color:var(--warning);color:var(--warning)}
+.save-btn{padding:.6rem 1.5rem;border-radius:8px;border:none;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-weight:700;font-size:.85rem;cursor:pointer;font-family:var(--font);transition:transform .2s}
+.save-btn:hover{transform:translateY(-1px)}
+
+/* PROGRESS */
+.prog-bar-wrap{margin-bottom:1rem}
+.prog-bar-top{display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:.4rem;font-weight:600}
+.prog-bar-bg{height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.prog-bar-fill{height:100%;border-radius:4px;transition:width 1s ease}
+
+/* BIOMETRIC */
+.biometric-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+.fingerprint-demo,.face-demo{display:flex;flex-direction:column;align-items:center;gap:1.5rem;padding:2rem;background:var(--surface);border-radius:20px;border:1px solid var(--border)}
+.fp-ring{width:140px;height:140px;border-radius:50%;border:3px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:4rem;position:relative;cursor:pointer;transition:border-color .3s}
+.fp-ring.scanning{border-color:var(--primary-light);animation:fpScan 1.5s ease-in-out infinite}
+.fp-ring.success{border-color:var(--success)}.fp-ring.fail{border-color:var(--danger)}
+@keyframes fpScan{0%,100%{box-shadow:0 0 0 0 rgba(59,130,246,.3)}50%{box-shadow:0 0 0 20px rgba(59,130,246,0)}}
+.fp-status{font-size:.9rem;font-weight:700;text-align:center}
+.fp-sub{font-size:.78rem;color:var(--muted);text-align:center}
+.fp-btn{padding:.75rem 2rem;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-weight:700;font-size:.9rem;border:none;cursor:pointer;font-family:var(--font);transition:transform .2s,opacity .2s}
+.fp-btn:hover{transform:translateY(-1px);opacity:.9}
+.face-frame{width:180px;height:180px;border-radius:16px;border:3px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:5rem;position:relative;overflow:hidden;cursor:pointer;transition:border-color .3s;background:linear-gradient(135deg,#f1f5f9,#e2e8f0)}
+.face-frame.scanning{border-color:var(--accent)}
+.face-frame.scanning::after{content:'';position:absolute;top:-10px;left:0;right:0;height:4px;background:linear-gradient(90deg,transparent,var(--accent),transparent);animation:faceScan 1.5s linear infinite}
+@keyframes faceScan{from{top:-10px}to{top:190px}}
+.face-frame.success{border-color:var(--success)}
+.camera-feed{width:180px;height:180px;border-radius:16px;overflow:hidden;position:relative;display:none}
+.camera-feed video{width:100%;height:100%;object-fit:cover}
+.camera-overlay{position:absolute;inset:0;border:3px solid var(--success);border-radius:16px;pointer-events:none}
+.corner{position:absolute;width:20px;height:20px;border-color:var(--success);border-style:solid}
+.corner.tl{top:8px;left:8px;border-width:2px 0 0 2px}
+.corner.tr{top:8px;right:8px;border-width:2px 2px 0 0}
+.corner.bl{bottom:8px;left:8px;border-width:0 0 2px 2px}
+.corner.br{bottom:8px;right:8px;border-width:0 2px 2px 0}
+
+/* ANTI-PROXY */
+.ap-layer-card{background:var(--surface);border:2px solid var(--border);border-radius:16px;padding:1.25rem;display:flex;align-items:center;gap:1rem;transition:border-color .4s}
+.ap-layer-ring{width:56px;height:56px;border-radius:50%;border:3px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0;transition:border-color .4s}
+@keyframes slideIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--success);animation:pulse 1s infinite;flex-shrink:0}
+
+/* TOAST */
+.toast-container{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:.6rem}
+.toast{padding:.9rem 1.25rem;border-radius:12px;font-size:.875rem;font-weight:600;display:flex;align-items:center;gap:.75rem;box-shadow:0 8px 30px rgba(0,0,0,.12);max-width:340px;animation:toastIn .3s ease;border:1px solid var(--border)}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+.toast.success{background:var(--white);border-left:4px solid var(--success)}
+.toast.error{background:var(--white);border-left:4px solid var(--danger)}
+.toast.info{background:var(--white);border-left:4px solid var(--primary-light)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border-radius:20px;padding:2.5rem;max-width:500px;width:94%;box-shadow:0 40px 100px rgba(0,0,0,.25);animation:modalIn .3s ease}
+@keyframes modalIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.modal h3{font-size:1.2rem;font-weight:800;margin-bottom:.5rem}
+.modal-sub{color:var(--muted);font-size:.88rem;margin-bottom:1.5rem}
+.modal-btns{display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.5rem}
+.modal-btn{padding:.65rem 1.5rem;border-radius:9px;font-size:.875rem;font-weight:700;cursor:pointer;font-family:var(--font);border:none;transition:all .2s}
+.modal-btn.cancel{background:var(--surface);color:var(--text2);border:1px solid var(--border)}
+.modal-btn.confirm{background:var(--primary);color:#fff}
+.modal-btn.danger-btn{background:var(--danger);color:#fff}
+.modal-btn:hover{opacity:.85;transform:translateY(-1px)}
+
+/* ACCESS CONTROL PANEL */
+.access-panel{background:#fff8f0;border:2px solid #fed7aa;border-radius:16px;padding:1.5rem;margin-bottom:1.5rem}
+.access-panel.granted{background:#f0fdf4;border-color:#86efac}
+.access-panel.denied{background:#fef2f2;border-color:#fca5a5}
+.access-status-row{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
+.access-big-badge{font-size:2rem}
+.access-status-text h3{font-size:1rem;font-weight:800}
+.access-status-text p{font-size:.8rem;color:var(--muted);margin-top:2px}
+.access-timer{font-family:var(--mono);font-size:2.5rem;font-weight:700;color:var(--primary);text-align:center;padding:1rem;background:var(--primary-glow);border-radius:12px;letter-spacing:.05em;margin:1rem 0}
+.access-timer.urgent{color:var(--danger);background:var(--danger-bg);animation:pulse .5s infinite}
+.access-controls{display:flex;gap:.75rem;flex-wrap:wrap}
+.ac-btn{padding:.6rem 1.2rem;border-radius:9px;border:none;font-family:var(--font);font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.4rem}
+.ac-btn:hover{transform:translateY(-1px)}
+.ac-btn.green{background:var(--success);color:#fff}
+.ac-btn.red{background:var(--danger);color:#fff}
+.ac-btn.blue{background:var(--primary);color:#fff}
+.ac-btn.gray{background:var(--surface);color:var(--text2);border:1px solid var(--border)}
+
+/* STUDENT MARK PAGE */
+.mark-container{max-width:500px;margin:0 auto}
+.mark-locked{text-align:center;padding:3rem 2rem;background:#fff;border-radius:20px;border:2px dashed var(--border2)}
+.mark-locked-icon{font-size:4rem;margin-bottom:1rem}
+.mark-locked h3{font-size:1.3rem;font-weight:800;margin-bottom:.5rem}
+.mark-locked p{color:var(--muted);font-size:.9rem}
+.mark-open{background:#fff;border-radius:20px;border:2px solid var(--success);overflow:hidden}
+.mark-open-header{background:linear-gradient(135deg,var(--success),#059669);padding:1.5rem;color:#fff;text-align:center}
+.mark-open-header h3{font-size:1.2rem;font-weight:800}
+.mark-open-header p{font-size:.82rem;opacity:.85;margin-top:.3rem}
+.mark-steps{padding:1.5rem;display:flex;flex-direction:column;gap:1.25rem}
+.mark-step{border:2px solid var(--border);border-radius:12px;padding:1rem;transition:border-color .3s}
+.mark-step.done{border-color:var(--success);background:var(--success-bg)}
+.mark-step.active{border-color:var(--primary-light)}
+.mark-step-header{display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--border);color:var(--muted);font-size:.78rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mark-step.done .step-num{background:var(--success);color:#fff}
+.mark-step.active .step-num{background:var(--primary);color:#fff}
+.step-label{font-weight:700;font-size:.88rem}
+
+/* GATE AI */
+.gate-card{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:transform .2s,box-shadow .2s}
+.gate-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.gate-card-head{padding:1rem 1.25rem;display:flex;align-items:center;gap:.75rem}
+.gate-subject-tag{font-size:.68rem;font-weight:700;padding:.2rem .6rem;border-radius:5px;text-transform:uppercase;letter-spacing:.06em}
+.gate-tasks{padding:0 1.25rem 1.25rem;display:flex;flex-direction:column;gap:.6rem}
+.gate-task{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:.75rem}
+.gate-task-top{display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem}
+.gate-difficulty{font-size:.65rem;font-weight:700;padding:.15rem .45rem;border-radius:4px}
+.diff-easy{background:#dcfce7;color:#166534}.diff-med{background:#fef9c3;color:#b45309}.diff-hard{background:#fee2e2;color:#b91c1c}
+
+/* CAL */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-header{text-align:center;font-size:.7rem;font-weight:700;color:var(--muted);padding:.3rem}
+.cal-day{aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:600;cursor:pointer;transition:all .15s}
+.cal-day.present{background:var(--success-bg);color:var(--success)}
+.cal-day.absent{background:var(--danger-bg);color:var(--danger)}
+.cal-day.holiday{background:var(--warning-bg);color:var(--warning)}
+.cal-day.future{background:var(--surface);color:var(--muted2);cursor:default}
+.cal-day.empty{background:transparent;cursor:default}
+.cal-day.today{outline:2px solid var(--primary)}
+
+/* MISC */
+.section-title-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.section-title-bar h3{font-size:1rem;font-weight:800}
+.mt1{margin-top:1rem}.mt2{margin-top:1.5rem}
+.report-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem}
+.report-stat-box{text-align:center;padding:1.25rem;border-radius:14px;border:1px solid var(--border);background:var(--surface)}
+.report-stat-num{font-size:1.8rem;font-weight:800;letter-spacing:-.03em}
+.report-stat-label{font-size:.75rem;color:var(--muted);margin-top:.25rem;font-weight:500}
+select.form-input{cursor:pointer}
+</style>
+</head>
+<body>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalBox">
+    <h3 id="modalTitle">Confirm</h3>
+    <p class="modal-sub" id="modalDesc"></p>
+    <div id="modalBody"></div>
+    <div class="modal-btns" id="modalBtns">
+      <button class="modal-btn cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-btn confirm" id="modalConfirmBtn" onclick="closeModal()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ LOGIN ═══ -->
+<div class="screen active" id="screen-login">
+  <div class="login-left">
+    <div class="login-left-grid"></div>
+    <div class="login-brand">
+      <div class="login-logo-ring">🎓</div>
+      <h1>SJBIT</h1>
+      <p style="font-size:1rem;font-weight:700;color:rgba(255,255,255,.9);margin-top:.2rem">Attendance App</p>
+      <p>Sri Jagadguru balganghadarnath swamiji institute of technology </p>
+    </div>
+    <div class="login-pills">
+      <div class="login-pill"><div class="pill-icon">🔐</div><div><div class="pill-text">Teacher-Controlled Access</div><div class="pill-sub">Students mark only when granted</div></div></div>
+      <div class="login-pill"><div class="pill-icon">📷</div><div><div class="pill-text">Live Camera Verification</div><div class="pill-sub">Real camera + face recognition</div></div></div>
+      <div class="login-pill"><div class="pill-icon">🫆</div><div><div class="pill-text">Biometric Attendance</div><div class="pill-sub">Fingerprint & face detection</div></div></div>
+      <div class="login-pill"><div class="pill-icon">🎯</div><div><div class="pill-text">GATE Exam Prep AI</div><div class="pill-sub">Subject-wise free period guidance</div></div></div>
+    </div>
+  </div>
+  <div class="login-right">
+    <div class="login-form-wrap">
+      <h2>Welcome back 👋</h2>
+      <p>Sign in to your SJBIT Attendance account</p>
+      <div class="role-selector">
+        <button class="role-btn selected" onclick="selectRole(this,'admin')">
+          <span class="role-icon">🏛️</span><span class="role-name">Admin</span>
+        </button>
+        <button class="role-btn" onclick="selectRole(this,'teacher')">
+          <span class="role-icon">👩‍🏫</span><span class="role-name">Teacher</span>
+        </button>
+        <button class="role-btn" onclick="selectRole(this,'student')">
+          <span class="role-icon">🎓</span><span class="role-name">Student</span>
+        </button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <div class="form-input-icon">
+          <span class="input-icon">✉️</span>
+          <input type="email" class="form-input" id="emailInput" value="admin@sjbit.edu.in" placeholder="your@sjbit.edu.in">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="form-input-icon">
+          <span class="input-icon">🔒</span>
+          <input type="password" class="form-input" id="passInput" value="admin123" placeholder="Enter password">
+        </div>
+      </div>
+      <button class="login-btn" onclick="doLogin()"><span>🚀</span> Sign In to Dashboard</button>
+      <div class="demo-creds">
+        <p>Demo Credentials — click to fill</p>
+        <div class="cred-row"><span>Admin</span><code onclick="fillCreds('admin@sjbit.edu.in','admin123')">admin@sjbit.edu.in / admin123</code></div>
+        <div class="cred-row"><span>Teacher</span><code onclick="fillCreds('prof.kumar@sjbit.edu.in','teach123')">prof.kumar@sjbit.edu.in / teach123</code></div>
+        <div class="cred-row"><span>Student</span><code onclick="fillCreds('priya.k@sjbit.edu.in','stud123')">priya.k@sjbit.edu.in / stud123</code></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<div class="screen" id="screen-app">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <div class="logo-icon">🎓</div>
+        <div><div class="logo-text">SJ<span>BIT</span></div><div class="logo-sub">Attendance App</div></div>
+      </div>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar-row">
+        <div class="user-avatar" id="sidebarAvatar">AD</div>
+        <div><div class="user-name" id="sidebarName">Admin</div><div class="user-role" id="sidebarRole">Administrator</div></div>
+        <div class="user-badge" id="sidebarBadge">ADMIN</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <button class="nav-item active" onclick="navTo('dashboard',this)"><span class="nav-icon">📊</span> Dashboard</button>
+      <button class="nav-item" onclick="navTo('timetable',this)"><span class="nav-icon">🗓️</span> Timetable</button>
+      <button class="nav-item" onclick="navTo('attendance',this)"><span class="nav-icon">✅</span> Attendance Log</button>
+
+      <div class="nav-section-label" style="margin-top:.5rem">Attendance Tools</div>
+      <button class="nav-item" id="navAccessControl" onclick="navTo('access',this)"><span class="nav-icon">🔐</span> Access Control</button>
+      <button class="nav-item" id="navMarkAtt" onclick="navTo('markatt',this)"><span class="nav-icon">📷</span> Mark Attendance</button>
+      <button class="nav-item" onclick="navTo('antiproxy',this)"><span class="nav-icon">🛡️</span> Anti-Proxy</button>
+      <button class="nav-item" onclick="navTo('biometric',this)"><span class="nav-icon">🫆</span> Biometric</button>
+      <button class="nav-item" onclick="navTo('manual',this)"><span class="nav-icon">✏️</span> Manual Entry</button>
+
+      <div class="nav-section-label" style="margin-top:.5rem">Insights</div>
+      <button class="nav-item" onclick="navTo('reports',this)"><span class="nav-icon">📈</span> Reports<span class="nav-badge">3</span></button>
+      <button class="nav-item" onclick="navTo('students',this)"><span class="nav-icon">👥</span> Students</button>
+      <button class="nav-item" onclick="navTo('gate',this)"><span class="nav-icon">🎯</span> GATE Prep AI</button>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="doLogout()">🚪 Sign Out</button>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-left">
+        <h2 id="topbarTitle">Dashboard</h2>
+        <p id="topbarSub">SJBIT · Computer Science Dept · CSE-A · 2024-25</p>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-time" id="clockDisplay">10:00 AM</div>
+        <div class="notif-btn" onclick="showToast('You have 3 new alerts','info')">🔔<div class="notif-dot"></div></div>
+        <div class="user-avatar" style="width:36px;height:36px;font-size:.8rem;border-radius:50%;background:linear-gradient(135deg,#1e40af,#38bdf8);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;cursor:pointer" id="topAvatar">AD</div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="page-view active" id="page-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-top"><div class="stat-icon" style="background:#dbeafe;color:#1e40af">👥</div><span class="stat-trend trend-up">+2 today</span></div>
+          <div class="stat-num">42</div><div class="stat-label">Total Students</div><div class="stat-sub">CSE-A, Section 3</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-top"><div class="stat-icon" style="background:#dcfce7;color:#16a34a">✅</div><span class="stat-trend trend-up">↑ 4%</span></div>
+          <div class="stat-num">87%</div><div class="stat-label">Today's Attendance</div><div class="stat-sub">36 of 42 present</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-top"><div class="stat-icon" style="background:#fef9c3;color:#b45309">⚠️</div><span class="stat-trend trend-down">↑ 2</span></div>
+          <div class="stat-num">5</div><div class="stat-label">At-Risk Students</div><div class="stat-sub">Below 75% threshold</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-top"><div class="stat-icon" style="background:#f0fdf4;color:#16a34a">🔐</div><span class="stat-trend trend-up" id="accessStatusBadge" style="background:#fef9c3;color:#b45309">Closed</span></div>
+          <div class="stat-num" id="dashAccessLabel" style="font-size:1.2rem">Locked</div>
+          <div class="stat-label">Attendance Window</div>
+          <div class="stat-sub" id="dashAccessSub">No session active</div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">📅 Today's Schedule</div><div class="card-sub">Thursday, 26 March 2026</div></div><button class="card-action" onclick="navTo('timetable',null)">Full View</button></div>
+          <div class="card-body">
+            <div class="timetable">
+              <div class="tt-item done"><span class="tt-time">9:00–10:00</span><div class="tt-dot" style="background:#10b981"></div><div class="tt-info"><div class="tt-subject">Data Structures & Algorithms</div><div class="tt-detail">Prof. R. Kumar · Room 204</div></div><span class="tt-status" style="background:#dcfce7;color:#16a34a">Done</span></div>
+              <div class="tt-item current"><span class="tt-time">10:00–11:00</span><div class="tt-dot" style="background:#3b82f6;animation:pulse 1s infinite"></div><div class="tt-info"><div class="tt-subject">Mathematics III</div><div class="tt-detail">Prof. A. Nair · Room 301</div></div><span class="tt-status" style="background:#dbeafe;color:#1e40af">● Live</span></div>
+              <div class="tt-item"><span class="tt-time">11:00–12:00</span><div class="tt-dot" style="background:#f59e0b"></div><div class="tt-info"><div class="tt-subject">Free Period</div><div class="tt-detail">GATE Prep Tasks Scheduled</div></div><span class="tt-status" style="background:#fef9c3;color:#b45309">GATE AI</span></div>
+              <div class="tt-item"><span class="tt-time">12:00–1:00</span><div class="tt-dot" style="background:#cbd5e1"></div><div class="tt-info"><div class="tt-subject">Operating Systems</div><div class="tt-detail">Prof. K. Menon · Lab 2</div></div><span class="tt-status" style="background:#f1f5f9;color:#64748b">Upcoming</span></div>
+              <div class="tt-item"><span class="tt-time">2:00–4:00</span><div class="tt-dot" style="background:#cbd5e1"></div><div class="tt-info"><div class="tt-subject">DBMS Lab</div><div class="tt-detail">Prof. S. Kumar · Lab 4</div></div><span class="tt-status" style="background:#f1f5f9;color:#64748b">Upcoming</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">⚡ Recent Activity</div><div class="card-sub">Last entries today</div></div><button class="card-action" onclick="navTo('attendance',null)">All Records</button></div>
+          <div class="card-body" style="padding:0">
+            <table class="att-table">
+              <thead><tr><th>Student</th><th>Time</th><th>Method</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><div class="student-cell"><div class="s-avatar" style="background:#dbeafe;color:#1e40af">PK</div><div><div class="s-name">Priya Krishnan</div></div></div></td><td>10:02 AM</td><td><span class="method-tag">CAMERA</span></td><td><span class="badge badge-green">Present</span></td></tr>
+                <tr><td><div class="student-cell"><div class="s-avatar" style="background:#dcfce7;color:#166534">AR</div><div><div class="s-name">Arjun Reddy</div></div></div></td><td>10:04 AM</td><td><span class="method-tag">BIO</span></td><td><span class="badge badge-green">Present</span></td></tr>
+                <tr><td><div class="student-cell"><div class="s-avatar" style="background:#fef9c3;color:#b45309">RV</div><div><div class="s-name">Rahul Verma</div></div></div></td><td>10:09 AM</td><td><span class="method-tag">FACE</span></td><td><span class="badge badge-yellow">Late</span></td></tr>
+                <tr><td><div class="student-cell"><div class="s-avatar" style="background:#fce7f3;color:#be185d">DP</div><div><div class="s-name">Divya Pillai</div></div></div></td><td>—</td><td><span class="method-tag">—</span></td><td><span class="badge badge-red">Absent</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="card mt2">
+        <div class="card-header"><div><div class="card-title">📊 Department Attendance — This Week</div></div></div>
+        <div class="card-body">
+          <div class="prog-bar-wrap"><div class="prog-bar-top"><span>Computer Science (CSE-A)</span><span style="color:#10b981">92%</span></div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:92%;background:#10b981"></div></div></div>
+          <div class="prog-bar-wrap"><div class="prog-bar-top"><span>Computer Science (CSE-B)</span><span style="color:#3b82f6">87%</span></div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:87%;background:#3b82f6"></div></div></div>
+          <div class="prog-bar-wrap"><div class="prog-bar-top"><span>Electronics (ECE-A)</span><span style="color:#a855f7">78%</span></div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:78%;background:#a855f7"></div></div></div>
+          <div class="prog-bar-wrap"><div class="prog-bar-top"><span>Mechanical (ME-B)</span><span style="color:#f59e0b">71%</span></div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:71%;background:#f59e0b"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIMETABLE -->
+    <div class="page-view" id="page-timetable">
+      <div class="card">
+        <div class="card-header"><div><div class="card-title">🗓️ Weekly Timetable — CSE-A 2022 Batch</div><div class="card-sub">Semester 6 · Jan–May 2026</div></div><button class="card-action" onclick="showToast('Timetable exported as PDF','success')">Export PDF</button></div>
+        <div class="card-body" style="overflow-x:auto">
+          <table class="att-table">
+            <thead><tr><th>Time</th><th style="color:#3b82f6">Monday</th><th style="color:#10b981">Tuesday</th><th style="color:#f59e0b">Wednesday</th><th style="color:#a855f7">Thursday</th><th style="color:#ef4444">Friday</th></tr></thead>
+            <tbody>
+              <tr><td><span style="font-family:var(--mono);font-size:.78rem;color:var(--muted)">9–10 AM</span></td><td><div style="background:#dbeafe;color:#1e40af;padding:.4rem .6rem;border-radius:7px;font-size:.8rem;font-weight:600">Data Structures<div style="font-weight:400;color:#64748b;font-size:.7rem">R.Kumar · 204</div></div></td><td><div style="background:#dcfce7;color:#166534;padding:.4rem .6rem;border-radius:7px;font-size:.8rem;font-weight:600">Computer Networks<div style="font-weight:400;color:#64748b;font-size:.7rem">K.Menon · 301</div></div></td><td><div style="background:#dbeafe;color:#1e40af;padding:.4rem .6rem;border-radius:7px;font-size:.8rem;font-weight:600">Data Structures<div style="font-weight:400;color:#64748b;font-size:.7rem">R.Kumar · 204</div></div></td><td><div style="background:#dcfce7;color:#166534;padding:.4rem .6rem;border-radius:7px;font-size:.8rem;font-weight:600">Mathematics III<div style="font-weight:400;color:#64748b;font-size:.7rem">A.Nair · 301</div></div></td><td><div style="background:#fce7f3;color:#be185d;padding:.4rem .6rem;border-radius:7px;font-size:.8rem;font-weight:600">OS Lab<div style="font-weight:400;color:#64748b;font-size:.7rem">S.Kumar · Lab2</div></div></td></tr>
+              <tr><td><span style="font-family:var(--mono);font-size:.78rem;color:var(--muted)">10–11 AM</span></td><td><div style="background:#fef9c3;color:#b45309;padding:.4rem .6rem;border-radius:7px;font-size:.8rem;font-weight:600">Mathematics III<div style="font-weight:400;color:#64748b;font-size:.7rem">A.Nair · 301</div></div></td><td><div style="background:#f3e8ff;color:#7e22ce;padding:.4rem .6rem;border-radius:7px;font-size:.8rem;font-weight:600">Operating Systems<div style="font-weight:400;color:#64748b;font-size:.7rem">S.Kumar · 205</div></div></td><td><div style="background:#fee2e2;color:#b91c1c;padding:.4rem .6rem;border-radius:7px;font-size:.8rem;font-weight:600">Free Period<div style="font-weight:400;color:#64748b;font-size:.7rem">GATE Prep</div></div></td><td><div style="background:#dcfce7;color:#166534;padding:.4rem .6rem;border-radius:7px;font-size:.8rem;font-weight:600">Mathematics III<div style="font-weight:400;color:#64748b;font-size:.7rem">A.Nair · 301</div></div></td><td><div style="background:#fce7f3;color:#be185d;padding:.4rem .6rem;border-radius:7px;font-size:.8rem;font-weight:600">OS Lab<div style="font-weight:400;color:#64748b;font-size:.7rem">S.Kumar · Lab2</div></div></td></tr>
+              <tr><td><span style="font-family:var(--mono);font-size:.78rem;color:var(--muted)">11–12 AM</span></td><td><div style="background:#fee2e2;color:#b91c1c;padding:.4rem .6rem;border-radius:7px;font-size:.8rem;font-weight:600">Free Period<div style="font-weight:400;color:#64748b;font-size:.7rem">GATE Prep</div></div></td><td><div style="background:#dbeafe;color:#1e40af;padding:.4rem .6rem;border-radius:7px;font-size:.8rem;font-weight:600">DBMS<div style="font-weight:400;color:#64748b;font-size:.7rem">P.Rao · 302</div></div></td><td><div style="background:#dbeafe;color:#1e40af;padding:.4rem .6rem;border-radius:7px;font-size:.8rem;font-weight:600">Data Structures<div style="font-weight:400;color:#64748b;font-size:.7rem">R.Kumar · 204</div></div></td><td><div style="background:#fee2e2;color:#b91c1c;padding:.4rem .6rem;border-radius:7px;font-size:.8rem;font-weight:600">Free Period<div style="font-weight:400;color:#64748b;font-size:.7rem">GATE Prep</div></div></td><td><div style="background:#f3e8ff;color:#7e22ce;padding:.4rem .6rem;border-radius:7px;font-size:.8rem;font-weight:600">Operating Systems<div style="font-weight:400;color:#64748b;font-size:.7rem">S.Kumar · 205</div></div></td></tr>
+              <tr><td><span style="font-family:var(--mono);font-size:.78rem;color:var(--muted)">12–1 PM</span></td><td colspan="5" style="text-align:center;background:#f8fafc;color:#94a3b8;font-size:.82rem;font-weight:600">🍽️ Lunch Break</td></tr>
+              <tr><td><span style="font-family:var(--mono);font-size:.78rem;color:var(--muted)">2–4 PM</span></td><td><div style="background:#fce7f3;color:#be185d;padding:.4rem .6rem;border-radius:7px;font-size:.8rem;font-weight:600">Networks Lab<div style="font-weight:400;color:#64748b;font-size:.7rem">K.Menon · Lab3</div></div></td><td><div style="background:#fef9c3;color:#b45309;padding:.4rem .6rem;border-radius:7px;font-size:.8rem;font-weight:600">Mini Project<div style="font-weight:400;color:#64748b;font-size:.7rem">R.Kumar · Lab1</div></div></td><td><div style="background:#fce7f3;color:#be185d;padding:.4rem .6rem;border-radius:7px;font-size:.8rem;font-weight:600">DBMS Lab<div style="font-weight:400;color:#64748b;font-size:.7rem">P.Rao · Lab4</div></div></td><td><div style="background:#fce7f3;color:#be185d;padding:.4rem .6rem;border-radius:7px;font-size:.8rem;font-weight:600">DBMS Lab<div style="font-weight:400;color:#64748b;font-size:.7rem">P.Rao · Lab4</div></div></td><td><div style="background:#fef9c3;color:#b45309;padding:.4rem .6rem;border-radius:7px;font-size:.8rem;font-weight:600">Mini Project<div style="font-weight:400;color:#64748b;font-size:.7rem">R.Kumar · Lab1</div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ATTENDANCE LOG -->
+    <div class="page-view" id="page-attendance">
+      <div class="card">
+        <div class="card-header"><div><div class="card-title">✅ Attendance Log — Today</div><div class="card-sub">26 March 2026 · Mathematics III · 10:00–11:00 AM</div></div><div style="display:flex;gap:.5rem"><button class="card-action" onclick="showToast('Report exported!','success')">Export</button><button class="card-action" style="background:var(--success-bg);color:var(--success)" onclick="showToast('All parents notified','success')">Notify Parents</button></div></div>
+        <div class="card-body" style="padding:0">
+          <table class="att-table"><thead><tr><th>#</th><th>Student</th><th>Roll No.</th><th>Time In</th><th>Method</th><th>Status</th><th>Action</th></tr></thead><tbody id="attendanceTableBody"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACCESS CONTROL -->
+    <div class="page-view" id="page-access">
+      <div class="section-title-bar"><h3>🔐 Attendance Access Control</h3><span class="badge badge-blue" id="accessRoleBadge">Admin Panel</span></div>
+      <div id="accessControlContent"><!-- filled by JS --></div>
+    </div>
+
+    <!-- MARK ATTENDANCE (Student) -->
+    <div class="page-view" id="page-markatt">
+      <div class="section-title-bar"><h3>📷 Mark Your Attendance</h3><span class="badge badge-green" id="markRoleBadge">Camera + Face</span></div>
+      <div class="mark-container" id="markAttContent"><!-- filled by JS --></div>
+    </div>
+
+    <!-- ANTI-PROXY -->
+    <div class="page-view" id="page-antiproxy">
+      <div class="section-title-bar"><h3>🛡️ Anti-Proxy Attendance System</h3><span class="badge badge-blue" id="apSessionBadge">Initializing…</span></div>
+      <div class="grid-2" style="margin-bottom:1.5rem">
+        <div class="ap-layer-card" id="gpsCard"><div class="ap-layer-ring" id="gpsRing">📍</div><div><div style="font-weight:700;font-size:.9rem" id="gpsStatus">GPS Verification</div><div style="font-size:.75rem;color:var(--muted);margin-top:3px" id="gpsSub">Waiting to start…</div></div><span class="badge badge-yellow" id="gpsBadge" style="margin-left:auto">Pending</span></div>
+        <div class="ap-layer-card" id="wifiCard"><div class="ap-layer-ring" id="wifiRing">📶</div><div><div style="font-weight:700;font-size:.9rem" id="wifiStatus">Wi-Fi Verification</div><div style="font-size:.75rem;color:var(--muted);margin-top:3px" id="wifiSub">Waiting to start…</div></div><span class="badge badge-yellow" id="wifiBadge" style="margin-left:auto">Pending</span></div>
+        <div class="ap-layer-card" id="liveCard"><div class="ap-layer-ring" id="liveFrame" style="font-size:2rem">😐</div><div><div style="font-weight:700;font-size:.9rem" id="liveStatus">Liveness Check</div><div style="font-size:.75rem;color:var(--muted);margin-top:3px" id="liveSub">Face scan starts after location confirmed</div></div><span class="badge badge-yellow" id="liveBadge" style="margin-left:auto">Pending</span></div>
+        <div class="card" style="border-radius:16px"><div class="card-header"><div><div class="card-title">⚡ Live Console</div><div class="card-sub">Session verifications</div></div><div style="font-family:var(--mono);font-size:1.1rem;font-weight:700;color:var(--primary)" id="apScanCount">0</div></div><div class="card-body"><div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1rem"><div style="padding:.75rem 1rem;background:#fff;border-bottom:1px solid var(--border);font-size:.82rem;font-weight:700;display:flex;align-items:center;gap:.5rem"><div class="live-dot"></div> Event Log</div><div style="padding:.75rem;display:flex;flex-direction:column;gap:.4rem;max-height:180px;overflow-y:auto" id="apFeedBody"><div style="text-align:center;color:var(--muted2);font-size:.82rem;padding:1rem">Awaiting verifications…</div></div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;text-align:center;margin-bottom:1rem"><div style="padding:.9rem;background:var(--success-bg);border-radius:12px"><div style="font-size:1.5rem;font-weight:800;color:var(--success)" id="apPresent">0</div><div style="font-size:.72rem;color:var(--muted)">Verified</div></div><div style="padding:.9rem;background:var(--danger-bg);border-radius:12px"><div style="font-size:1.5rem;font-weight:800;color:var(--danger)" id="apBlocked">0</div><div style="font-size:.72rem;color:var(--muted)">Blocked</div></div><div style="padding:.9rem;background:var(--warning-bg);border-radius:12px"><div style="font-size:1.5rem;font-weight:800;color:var(--warning)" id="apPending">42</div><div style="font-size:.72rem;color:var(--muted)">Pending</div></div></div><div style="display:flex;gap:.75rem"><button class="fp-btn" style="flex:1" onclick="simulateAntiProxy(false)">✅ Verified</button><button class="fp-btn" style="flex:1;background:linear-gradient(135deg,#ef4444,#f87171)" onclick="simulateAntiProxy(true)">🚫 Block</button></div></div></div>
+      </div>
+    </div>
+
+    <!-- BIOMETRIC -->
+    <div class="page-view" id="page-biometric">
+      <div class="section-title-bar"><h3>🫆 Biometric Attendance</h3><div style="display:flex;gap:.5rem"><span class="badge badge-green">System Online</span><span class="badge badge-blue">BioScan Pro 3</span></div></div>
+      <div class="biometric-grid">
+        <div class="fingerprint-demo">
+          <h3 style="font-size:1rem;font-weight:800">👆 Fingerprint Scanner</h3>
+          <div class="fp-ring" id="fpRing" onclick="startFingerprint()">🫆</div>
+          <div class="fp-status" id="fpStatus">Place finger on scanner</div>
+          <div class="fp-sub" id="fpSub">Click ring to simulate scan</div>
+          <button class="fp-btn" onclick="startFingerprint()">Start Scan</button>
+        </div>
+        <div class="face-demo">
+          <h3 style="font-size:1rem;font-weight:800">🤳 Face Recognition (Live Camera)</h3>
+          <div id="cameraWrap" style="position:relative;border-radius:16px;overflow:hidden;width:180px;height:180px;display:none">
+            <video id="cameraVideo" style="width:100%;height:100%;object-fit:cover" autoplay muted playsinline></video>
+            <div style="position:absolute;inset:0;border:3px solid var(--success);border-radius:16px"></div>
+            <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+          </div>
+          <div class="face-frame" id="faceFrame" onclick="startFaceRecog()">😊<div style="position:absolute;inset:0;display:none" id="faceLandmarks"><div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div></div></div>
+          <div class="fp-status" id="faceStatus">Click to activate camera</div>
+          <div class="fp-sub" id="faceSub">Face detection ready</div>
+          <div style="display:flex;gap:.5rem">
+            <button class="fp-btn" onclick="startCamera()">📷 Use Camera</button>
+            <button class="fp-btn" style="background:linear-gradient(135deg,#6b7280,#9ca3af)" onclick="startFaceRecog()">Demo Mode</button>
+          </div>
+        </div>
+      </div>
+      <div class="card mt2">
+        <div class="card-header"><div><div class="card-title">Biometric Scan Log</div><div class="card-sub">Today's verified entries</div></div></div>
+        <div class="card-body" style="padding:0">
+          <table class="att-table"><thead><tr><th>Student</th><th>Method</th><th>Confidence</th><th>Time</th><th>Status</th></tr></thead>
+          <tbody id="bioLog"><tr><td><div class="student-cell"><div class="s-avatar" style="background:#dcfce7;color:#16a34a">KS</div><div><div class="s-name">Karthik Suresh</div></div></div></td><td><span class="method-tag">FACE</span></td><td><span style="color:var(--success);font-weight:700">98.4%</span></td><td>10:01 AM</td><td><span class="badge badge-green">Verified</span></td></tr><tr><td><div class="student-cell"><div class="s-avatar" style="background:#dbeafe;color:#1e40af">AR</div><div><div class="s-name">Arjun Reddy</div></div></div></td><td><span class="method-tag">FINGER</span></td><td><span style="color:var(--success);font-weight:700">99.1%</span></td><td>10:04 AM</td><td><span class="badge badge-green">Verified</span></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MANUAL ENTRY -->
+    <div class="page-view" id="page-manual">
+      <div id="manualAccessWarn" style="display:none;background:#fff8f0;border:2px solid #fed7aa;border-radius:14px;padding:1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:1rem">
+        <span style="font-size:1.5rem">⚠️</span>
+        <div><div style="font-weight:700">Manual entry is restricted to Admin / Teacher</div><div style="font-size:.82rem;color:var(--muted);margin-top:2px">Students cannot manually mark attendance. Use the Mark Attendance page instead.</div></div>
+      </div>
+      <div class="card" id="manualCard">
+        <div class="card-header"><div><div class="card-title">✏️ Manual Attendance Entry</div><div class="card-sub">Mathematics III · 26 March 2026 · 10:00 AM</div></div><button class="save-btn" onclick="openModal('Save Attendance?','This will save attendance for all 42 students and send notifications to parents of absent students.',null,()=>showToast('Attendance saved for all students!','success'))">💾 Save All</button></div>
+        <div class="card-body" style="padding:0">
+          <div style="padding:1rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);display:flex;gap:1rem;align-items:center">
+            <div style="font-size:.82rem;color:var(--muted)">Quick mark all:</div>
+            <button onclick="markAll('p')" style="padding:.35rem .9rem;border-radius:7px;border:1.5px solid var(--success);background:var(--success-bg);color:var(--success);font-size:.78rem;font-weight:700;cursor:pointer;font-family:var(--font)">All Present</button>
+            <button onclick="markAll('a')" style="padding:.35rem .9rem;border-radius:7px;border:1.5px solid var(--danger);background:var(--danger-bg);color:var(--danger);font-size:.78rem;font-weight:700;cursor:pointer;font-family:var(--font)">All Absent</button>
+          </div>
+          <div id="manualList" style="padding:1rem 1.5rem;display:flex;flex-direction:column;gap:.5rem"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORTS -->
+    <div class="page-view" id="page-reports">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">📈 Monthly Report — March 2026</div><div class="card-sub">CSE-A · 22 working days</div></div></div>
+          <div class="card-body">
+            <div class="report-stat-row">
+              <div class="report-stat-box"><div class="report-stat-num" style="color:var(--success)">87%</div><div class="report-stat-label">Avg Attendance</div></div>
+              <div class="report-stat-box"><div class="report-stat-num" style="color:var(--primary)">22</div><div class="report-stat-label">Working Days</div></div>
+              <div class="report-stat-box"><div class="report-stat-num" style="color:var(--danger)">5</div><div class="report-stat-label">At-Risk</div></div>
+            </div>
+            <div class="prog-bar-wrap"><div class="prog-bar-top"><span>Present Days</span><span style="color:var(--success)">19.1/22 avg</span></div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:87%;background:var(--success)"></div></div></div>
+            <div class="prog-bar-wrap"><div class="prog-bar-top"><span>On-Time Arrivals</span><span style="color:var(--primary)">82%</span></div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:82%;background:var(--primary-light)"></div></div></div>
+            <div class="prog-bar-wrap"><div class="prog-bar-top"><span>Biometric Verified</span><span style="color:var(--accent)">71%</span></div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:71%;background:var(--accent)"></div></div></div>
+            <button class="save-btn" style="margin-top:1rem;width:100%;padding:.7rem" onclick="showToast('Report downloaded as PDF','success')">📄 Download Full Report</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">🗓️ Attendance Calendar — Priya Krishnan</div><div class="card-sub">22CS047 · March 2026</div></div></div>
+          <div class="card-body">
+            <div class="cal-grid" style="margin-bottom:.75rem"><div class="cal-header">Mo</div><div class="cal-header">Tu</div><div class="cal-header">We</div><div class="cal-header">Th</div><div class="cal-header">Fr</div><div class="cal-header">Sa</div><div class="cal-header">Su</div></div>
+            <div class="cal-grid" id="calGrid"></div>
+            <div style="display:flex;gap:1rem;margin-top:1rem;font-size:.75rem;font-weight:600">
+              <div style="display:flex;align-items:center;gap:.4rem"><div style="width:12px;height:12px;border-radius:3px;background:var(--success-bg);border:1px solid var(--success)"></div><span style="color:var(--muted)">Present</span></div>
+              <div style="display:flex;align-items:center;gap:.4rem"><div style="width:12px;height:12px;border-radius:3px;background:var(--danger-bg);border:1px solid var(--danger)"></div><span style="color:var(--muted)">Absent</span></div>
+              <div style="display:flex;align-items:center;gap:.4rem"><div style="width:12px;height:12px;border-radius:3px;background:var(--warning-bg);border:1px solid var(--warning)"></div><span style="color:var(--muted)">Holiday</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STUDENTS -->
+    <div class="page-view" id="page-students">
+      <div class="card">
+        <div class="card-header"><div><div class="card-title">👥 Student Directory — CSE-A 2022 Batch</div><div class="card-sub">42 students enrolled</div></div><button class="card-action" onclick="showToast('Student data exported','success')">Export CSV</button></div>
+        <div class="card-body" style="padding:0">
+          <table class="att-table"><thead><tr><th>Student</th><th>Roll No.</th><th>Attendance %</th><th>GATE Target</th><th>Status</th><th>Last Seen</th></tr></thead><tbody id="studentTableBody"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- GATE PREP AI -->
+    <div class="page-view" id="page-gate">
+      <div class="section-title-bar">
+        <h3>🎯 GATE Exam Prep — Free Period AI Guide</h3>
+        <div style="display:flex;gap:.5rem;align-items:center">
+          <span class="badge badge-orange">Free Period: 11:00–12:00 AM</span>
+          <select class="form-input" id="gateSubjectFilter" onchange="buildGateGrid()" style="width:auto;padding:.3rem .8rem;font-size:.78rem;height:auto;border-radius:8px">
+            <option value="all">All Subjects</option>
+            <option value="dsa">Data Structures & Algorithms</option>
+            <option value="os">Operating Systems</option>
+            <option value="dbms">Database Management</option>
+            <option value="cn">Computer Networks</option>
+            <option value="math">Engineering Mathematics</option>
+            <option value="toc">Theory of Computation</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- GATE Subject Progress -->
+      <div class="card" style="margin-bottom:1.5rem">
+        <div class="card-header"><div><div class="card-title">📊 GATE Syllabus Coverage — CSE</div><div class="card-sub">Based on your current semester subjects</div></div></div>
+        <div class="card-body">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem">
+            <div><div class="prog-bar-top"><span style="font-size:.78rem">Data Structures & Algo</span><span style="color:var(--success)">68%</span></div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:68%;background:var(--success)"></div></div></div>
+            <div><div class="prog-bar-top"><span style="font-size:.78rem">Operating Systems</span><span style="color:var(--primary)">52%</span></div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:52%;background:var(--primary-light)"></div></div></div>
+            <div><div class="prog-bar-top"><span style="font-size:.78rem">DBMS</span><span style="color:var(--accent)">44%</span></div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:44%;background:var(--accent)"></div></div></div>
+            <div><div class="prog-bar-top"><span style="font-size:.78rem">Computer Networks</span><span style="color:var(--warning)">38%</span></div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:38%;background:var(--warning)"></div></div></div>
+            <div><div class="prog-bar-top"><span style="font-size:.78rem">Engineering Mathematics</span><span style="color:var(--danger)">29%</span></div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:29%;background:var(--danger)"></div></div></div>
+            <div><div class="prog-bar-top"><span style="font-size:.78rem">Theory of Computation</span><span style="color:#a855f7">21%</span></div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:21%;background:#a855f7"></div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-3" id="gateGrid"></div>
+    </div>
+
+  </div><!-- end main-content -->
+</div><!-- end screen-app -->
+
+<script>
+// ════════════════════ DATA ════════════════════
+const USERS = {
+  'admin@sjbit.edu.in':      { pass:'admin123',  name:'Dr. R. Prakash',   role:'admin',   initials:'RP', badge:'ADMIN', title:'System Administrator' },
+  'prof.kumar@sjbit.edu.in': { pass:'teach123',  name:'Prof. R. Kumar',   role:'teacher', initials:'RK', badge:'STAFF', title:'Faculty · Data Structures' },
+  'priya.k@sjbit.edu.in':    { pass:'stud123',   name:'Priya Krishnan',   role:'student', initials:'PK', badge:'CSE-A', title:'1SJ22CS047 · Sem 6' }
+};
+
+const STUDENTS = [
+  { name:'Priya Krishnan',  id:'1SJ22CS047', pct:92, gate:'AI/ML',         color:'#dbeafe', tc:'#1e40af' },
+  { name:'Arjun Reddy',     id:'1SJ22CS012', pct:88, gate:'Software Eng',  color:'#dcfce7', tc:'#166534' },
+  { name:'Divya Pillai',    id:'1SJ22CS019', pct:68, gate:'Data Science',  color:'#fce7f3', tc:'#be185d' },
+  { name:'Rahul Verma',     id:'1SJ22CS031', pct:74, gate:'Cybersecurity', color:'#fef9c3', tc:'#b45309' },
+  { name:'Karthik Suresh',  id:'1SJ22CS028', pct:95, gate:'AI Research',   color:'#f3e8ff', tc:'#7e22ce' },
+  { name:'Sneha Mehta',     id:'1SJ22CS039', pct:71, gate:'Cloud/DevOps',  color:'#fce7f3', tc:'#be185d' },
+  { name:'Vivek Rao',       id:'1SJ22CS054', pct:85, gate:'Embedded Sys',  color:'#dcfce7', tc:'#166534' },
+  { name:'Ananya Singh',    id:'1SJ22CS008', pct:90, gate:'VLSI Design',   color:'#dbeafe', tc:'#1e40af' },
+];
+
+// GATE tasks per subject for free periods
+const GATE_TASKS = {
+  dsa: {
+    label:'Data Structures & Algorithms', color:'#3b82f6', bg:'#dbeafe', icon:'🌲',
+    tasks:[
+      { title:'Graph BFS/DFS', desc:'Solve 3 GATE PYQ problems on BFS/DFS traversal — check 2019, 2021 papers', diff:'med', time:'25 min', marks:'4-6 marks typical' },
+      { title:'Dynamic Programming', desc:'Practice Longest Common Subsequence and Matrix Chain Multiplication derivations', diff:'hard', time:'40 min', marks:'5-8 marks typical' },
+      { title:'Binary Trees', desc:'Height, diameter, level order traversal — frequently tested in GATE CSE', diff:'easy', time:'20 min', marks:'2-3 marks typical' },
+      { title:'Sorting Algorithms', desc:'Time & space complexity comparison, stable sort identification — guaranteed MCQ topic', diff:'easy', time:'15 min', marks:'1-2 marks typical' },
+    ]
+  },
+  os: {
+    label:'Operating Systems', color:'#a855f7', bg:'#f3e8ff', icon:'💻',
+    tasks:[
+      { title:'Process Scheduling', desc:'Solve FCFS, SJF, Round Robin questions from GATE 2020–2023 previous papers', diff:'med', time:'30 min', marks:'3-5 marks typical' },
+      { title:'Deadlock Detection', desc:'Banker\'s algorithm problems — understand safe state, resource allocation graphs', diff:'hard', time:'35 min', marks:'4-6 marks typical' },
+      { title:'Page Replacement', desc:'FIFO, LRU, Optimal — compute page faults for given reference strings', diff:'med', time:'20 min', marks:'3-4 marks typical' },
+      { title:'Semaphores & Mutex', desc:'Producer-consumer, reader-writer synchronization problems', diff:'hard', time:'30 min', marks:'4-5 marks typical' },
+    ]
+  },
+  dbms: {
+    label:'Database Management', color:'#f59e0b', bg:'#fef9c3', icon:'🗄️',
+    tasks:[
+      { title:'Normalization (1NF–BCNF)', desc:'Find functional dependencies, candidate keys, decompose to BCNF — 5-6 mark questions common', diff:'hard', time:'35 min', marks:'5-6 marks typical' },
+      { title:'SQL Queries', desc:'Practice nested queries, GROUP BY, HAVING, joins from GATE PYQs', diff:'med', time:'25 min', marks:'2-4 marks typical' },
+      { title:'Relational Algebra', desc:'Convert SQL to relational algebra and vice versa — projection, selection, joins', diff:'med', time:'20 min', marks:'2-3 marks typical' },
+      { title:'Transaction Management', desc:'ACID properties, isolation levels, serialization — important for 2-mark MCQs', diff:'easy', time:'15 min', marks:'2 marks typical' },
+    ]
+  },
+  cn: {
+    label:'Computer Networks', color:'#0ea5e9', bg:'#e0f2fe', icon:'🌐',
+    tasks:[
+      { title:'Subnetting & CIDR', desc:'Calculate subnet masks, valid host ranges, number of subnets — always in GATE', diff:'med', time:'25 min', marks:'3-4 marks typical' },
+      { title:'TCP vs UDP', desc:'Flow control, congestion control, sliding window protocol problems', diff:'med', time:'20 min', marks:'2-4 marks typical' },
+      { title:'Routing Algorithms', desc:'Dijkstra shortest path, distance vector (Bellman-Ford) — numerical problems', diff:'hard', time:'30 min', marks:'4-5 marks typical' },
+      { title:'OSI & TCP/IP Layers', desc:'Function of each layer, protocol identification — fast 1-2 mark questions', diff:'easy', time:'15 min', marks:'1-2 marks typical' },
+    ]
+  },
+  math: {
+    label:'Engineering Mathematics', color:'#10b981', bg:'#dcfce7', icon:'🧮',
+    tasks:[
+      { title:'Linear Algebra', desc:'Eigenvalues, eigenvectors, matrix rank, determinant — 8-10 marks in GATE every year', diff:'hard', time:'40 min', marks:'8-10 marks typical' },
+      { title:'Calculus & Limits', desc:'L\'Hopital\'s rule, partial derivatives, maxima/minima for multi-variable functions', diff:'med', time:'25 min', marks:'3-4 marks typical' },
+      { title:'Probability & Stats', desc:'Bayes theorem, conditional probability, Poisson/Normal distributions', diff:'med', time:'25 min', marks:'4-5 marks typical' },
+      { title:'Discrete Math / Sets', desc:'Relations, functions, group theory, counting principles — Pigeonhole principle', diff:'easy', time:'20 min', marks:'2-3 marks typical' },
+    ]
+  },
+  toc: {
+    label:'Theory of Computation', color:'#be185d', bg:'#fce7f3', icon:'🔬',
+    tasks:[
+      { title:'Finite Automata (DFA/NFA)', desc:'Construct DFA from NFA, minimization, language recognition — guaranteed topic', diff:'med', time:'30 min', marks:'3-5 marks typical' },
+      { title:'Regular Expressions', desc:'Convert regex to DFA, identify regular languages, pumping lemma proofs', diff:'hard', time:'35 min', marks:'4-6 marks typical' },
+      { title:'Context-Free Grammars', desc:'Derive strings, check ambiguity, convert to Chomsky Normal Form', diff:'hard', time:'30 min', marks:'4-5 marks typical' },
+      { title:'Turing Machines', desc:'Decidability, halting problem, P vs NP classification — conceptual MCQs', diff:'hard', time:'25 min', marks:'3-4 marks typical' },
+    ]
+  },
+};
+
+// Access control state (shared between teacher/admin and student)
+let accessState = {
+  open: false,
+  subject: 'Mathematics III',
+  room: '301',
+  endTime: null,
+  timerInterval: null,
+  openedBy: null,
+};
+
+let currentUser = null;
+let selectedRole = 'admin';
+let cameraStream = null;
+let markStep = 0; // student marking steps
+let apTimerInterval = null;
+let apScanCount = 0;
+let apPresent = 0;
+let apBlocked = 0;
+let gpsVerified = false;
+let wifiVerified = false;
+const apNames = ['Priya Krishnan','Arjun Reddy','Karthik Suresh','Vivek Rao','Ananya Singh','Sneha Mehta','Rahul Verma'];
+const blockReasons = ['GPS outside campus boundary (12.4 km away)','Wi-Fi SSID not in trusted list (HomeNet_5G)','Liveness failed — static image detected','GPS spoofing detected via sensor mismatch','VPN tunnel detected — real IP outside campus'];
+
+// ════════════════════ CLOCK ════════════════════
+function updateClock() {
+  const now = new Date();
+  let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  const el = document.getElementById('clockDisplay');
+  if (el) el.textContent = `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} ${ampm}`;
+}
+setInterval(updateClock, 1000);
+
+// ════════════════════ LOGIN ════════════════════
+function selectRole(btn, role) {
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedRole = role;
+  const map = {
+    admin:   { email:'admin@sjbit.edu.in',      pass:'admin123' },
+    teacher: { email:'prof.kumar@sjbit.edu.in', pass:'teach123' },
+    student: { email:'priya.k@sjbit.edu.in',    pass:'stud123'  }
+  };
+  document.getElementById('emailInput').value = map[role].email;
+  document.getElementById('passInput').value  = map[role].pass;
+}
+
+function fillCreds(email, pass) {
+  document.getElementById('emailInput').value = email;
+  document.getElementById('passInput').value  = pass;
+}
+
+function doLogin() {
+  const email = document.getElementById('emailInput').value.trim();
+  const pass  = document.getElementById('passInput').value.trim();
+  const user  = USERS[email];
+  if (!user || user.pass !== pass) {
+    showToast('Invalid credentials. Try the demo credentials below.', 'error');
+    return;
+  }
+  currentUser = { ...user, email };
+  document.getElementById('sidebarName').textContent   = user.name;
+  document.getElementById('sidebarRole').textContent   = user.title;
+  document.getElementById('sidebarBadge').textContent  = user.badge;
+  document.getElementById('sidebarAvatar').textContent = user.initials;
+  document.getElementById('topAvatar').textContent     = user.initials;
+
+  // Role-based nav visibility
+  const isStudent = user.role === 'student';
+  document.getElementById('navAccessControl').style.display = isStudent ? 'none' : 'flex';
+  document.getElementById('navMarkAtt').textContent = isStudent
+    ? '  📷  Mark My Attendance' : '  📷  Mark Attendance';
+
+  showScreen('app');
+  buildAttTable();
+  buildManualList();
+  buildStudentTable();
+  buildCalendar();
+  buildGateGrid();
+  renderAccessPage();
+  renderMarkPage();
+  initAntiProxy();
+  updateDashboardAccess();
+  showToast(`Welcome, ${user.name.split(' ')[0]}! 👋`, 'success');
+}
+
+function doLogout() {
+  clearInterval(apTimerInterval);
+  clearInterval(accessState.timerInterval);
+  stopCamera();
+  showScreen('login');
+  showToast('Signed out successfully', 'info');
+}
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+}
+
+// ════════════════════ NAV ════════════════════
+const PAGE_TITLES = {
+  dashboard: ['Dashboard','SJBIT · Computer Science Dept · CSE-A · 2024-25'],
+  timetable: ['Timetable','CSE-A · Semester 6 · January–May 2026'],
+  attendance: ['Attendance Log','26 March 2026 · All Classes'],
+  access:    ['Attendance Access Control','Teacher/Admin controlled marking window'],
+  markatt:   ['Mark Attendance','Camera + Face Verification'],
+  antiproxy: ['Anti-Proxy System','GPS + Wi-Fi + Liveness · Mathematics III · Room 301'],
+  biometric: ['Biometric Attendance','Fingerprint & Face Recognition'],
+  manual:    ['Manual Entry','Mark attendance by hand'],
+  reports:   ['Reports & Analytics','March 2026 Summary'],
+  students:  ['Student Directory','CSE-A 2022 Batch — 42 Students'],
+  gate:      ['GATE Prep AI','Free Period subject-wise guidance'],
+};
+
+function navTo(page, btn) {
+  document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  if (btn) { document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); btn.classList.add('active'); }
+  const t = PAGE_TITLES[page] || [page,''];
+  document.getElementById('topbarTitle').textContent = t[0];
+  document.getElementById('topbarSub').textContent   = t[1];
+  if (page === 'markatt') renderMarkPage();
+  if (page === 'access')  renderAccessPage();
+}
+
+// ════════════════════ ACCESS CONTROL ════════════════════
+function renderAccessPage() {
+  const el = document.getElementById('accessControlContent');
+  const isPrivileged = currentUser && (currentUser.role === 'admin' || currentUser.role === 'teacher');
+
+  if (isPrivileged) {
+    el.innerHTML = `
+      <div class="access-panel ${accessState.open ? 'granted' : ''}" id="accessPanelBox">
+        <div class="access-status-row">
+          <div class="access-big-badge">${accessState.open ? '✅' : '🔒'}</div>
+          <div class="access-status-text">
+            <h3>${accessState.open ? 'Attendance Window is OPEN' : 'Attendance Window is CLOSED'}</h3>
+            <p>${accessState.open ? `Subject: ${accessState.subject} · Room ${accessState.room} · Opened by ${accessState.openedBy}` : 'Students cannot mark attendance until you open a session.'}</p>
+          </div>
+        </div>
+        ${accessState.open ? `<div class="access-timer" id="accessTimerDisplay">--:--</div>` : ''}
+        <div class="access-controls">
+          ${accessState.open
+            ? `<button class="ac-btn red" onclick="closeAccessWindow()">🔒 Close Window</button>
+               <button class="ac-btn gray" onclick="extendAccessWindow(5)">+5 min</button>
+               <button class="ac-btn gray" onclick="extendAccessWindow(10)">+10 min</button>`
+            : `<button class="ac-btn green" onclick="openAccessWindow()">🔓 Open Window</button>`
+          }
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div><div class="card-title">⚙️ Session Settings</div><div class="card-sub">Configure the attendance window before opening</div></div></div>
+        <div class="card-body">
+          <div class="grid-2" style="gap:1.25rem;margin-bottom:1.25rem">
+            <div class="form-group" style="margin:0">
+              <label class="form-label">Subject / Class</label>
+              <select class="form-input" id="accSubject">
+                <option>Mathematics III</option>
+                <option>Data Structures & Algorithms</option>
+                <option>Operating Systems</option>
+                <option>Computer Networks</option>
+                <option>DBMS</option>
+                <option>DBMS Lab</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin:0">
+              <label class="form-label">Room / Location</label>
+              <select class="form-input" id="accRoom">
+                <option>Room 301</option><option>Room 204</option><option>Room 205</option>
+                <option>Room 302</option><option>Lab 2</option><option>Lab 3</option><option>Lab 4</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin:0">
+              <label class="form-label">Marking Duration</label>
+              <select class="form-input" id="accDuration">
+                <option value="5">5 minutes</option>
+                <option value="10" selected>10 minutes</option>
+                <option value="15">15 minutes</option>
+                <option value="20">20 minutes</option>
+                <option value="30">30 minutes</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin:0">
+              <label class="form-label">Verification Method</label>
+              <select class="form-input" id="accMethod">
+                <option>Camera + Face Recognition</option>
+                <option>Fingerprint Only</option>
+                <option>Camera + Fingerprint</option>
+                <option>Manual (Teacher marks)</option>
+              </select>
+            </div>
+          </div>
+          <button class="ac-btn green" style="width:100%;justify-content:center;padding:.75rem" onclick="openAccessWindow()">🔓 Open Attendance Window Now</button>
+        </div>
+      </div>
+
+      <div class="card mt2">
+        <div class="card-header"><div><div class="card-title">📋 Student Marking Status</div><div class="card-sub">Who has marked for this session</div></div></div>
+        <div class="card-body" style="padding:0">
+          <table class="att-table">
+            <thead><tr><th>Student</th><th>Roll No.</th><th>Status</th><th>Marked At</th><th>Method</th></tr></thead>
+            <tbody>${STUDENTS.map((s,i) => {
+              const marked = i < 5 && accessState.open;
+              const times  = ['10:02','10:04','10:06','10:07','10:09'];
+              return `<tr>
+                <td><div class="student-cell"><div class="s-avatar" style="background:${s.color};color:${s.tc}">${s.name.split(' ').map(n=>n[0]).join('')}</div><div class="s-name">${s.name}</div></div></td>
+                <td><span style="font-family:var(--mono);font-size:.8rem">${s.id}</span></td>
+                <td><span class="badge ${marked ? 'badge-green' : 'badge-yellow'}">${marked ? 'Marked' : 'Pending'}</span></td>
+                <td style="font-size:.8rem;color:var(--muted)">${marked ? times[i]+' AM' : '—'}</td>
+                <td>${marked ? '<span class="method-tag">CAMERA</span>' : '—'}</td>
+              </tr>`;
+            }).join('')}</tbody>
+          </table>
+        </div>
+      </div>`;
+  } else {
+    // Student view of access page
+    el.innerHTML = `
+      <div class="access-panel ${accessState.open ? 'granted' : 'denied'}">
+        <div class="access-status-row">
+          <div class="access-big-badge">${accessState.open ? '✅' : '🔒'}</div>
+          <div class="access-status-text">
+            <h3>${accessState.open ? 'Attendance is OPEN — Mark Now!' : 'Attendance Window is Closed'}</h3>
+            <p>${accessState.open ? `${accessState.subject} · Room ${accessState.room} · Hurry before time runs out!` : 'Wait for your teacher to open the attendance window.'}</p>
+          </div>
+        </div>
+        ${accessState.open ? `<div class="access-timer" id="accessTimerDisplay">--:--</div><button class="ac-btn green" onclick="navTo('markatt',null)" style="margin-top:.5rem">📷 Mark My Attendance Now</button>` : `<div style="text-align:center;padding:1rem;color:var(--muted);font-size:.88rem">🔔 You will see a notification when your teacher opens attendance.</div>`}
+      </div>`;
+  }
+  if (accessState.open) startAccessTimerDisplay();
+}
+
+function openAccessWindow() {
+  const subEl  = document.getElementById('accSubject');
+  const roomEl = document.getElementById('accRoom');
+  const durEl  = document.getElementById('accDuration');
+  const dur = durEl ? parseInt(durEl.value) : 10;
+  accessState.subject  = subEl  ? subEl.value  : 'Mathematics III';
+  accessState.room     = roomEl ? roomEl.value.replace('Room ','') : '301';
+  accessState.open     = true;
+  accessState.openedBy = currentUser.name;
+  accessState.endTime  = Date.now() + dur * 60 * 1000;
+  clearInterval(accessState.timerInterval);
+  accessState.timerInterval = setInterval(() => {
+    if (Date.now() >= accessState.endTime) {
+      closeAccessWindow();
+      showToast('⏰ Attendance window closed automatically — time expired!', 'error');
+    }
+    updateDashboardAccess();
+    const el = document.getElementById('accessTimerDisplay');
+    if (el) {
+      const rem = Math.max(0, Math.ceil((accessState.endTime - Date.now()) / 1000));
+      const m = Math.floor(rem / 60), s = rem % 60;
+      el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+      el.classList.toggle('urgent', rem <= 60);
+    }
+  }, 1000);
+  renderAccessPage();
+  renderMarkPage();
+  updateDashboardAccess();
+  showToast(`✅ Attendance window opened for ${dur} min — ${accessState.subject}`, 'success');
+}
+
+function closeAccessWindow() {
+  accessState.open = false;
+  accessState.endTime = null;
+  clearInterval(accessState.timerInterval);
+  renderAccessPage();
+  renderMarkPage();
+  updateDashboardAccess();
+  showToast('🔒 Attendance window closed', 'info');
+}
+
+function extendAccessWindow(mins) {
+  if (!accessState.endTime) return;
+  accessState.endTime += mins * 60 * 1000;
+  showToast(`⏱ Window extended by ${mins} minutes`, 'success');
+}
+
+function startAccessTimerDisplay() {
+  const tick = () => {
+    const el = document.getElementById('accessTimerDisplay');
+    if (!el || !accessState.endTime) return;
+    const rem = Math.max(0, Math.ceil((accessState.endTime - Date.now()) / 1000));
+    const m = Math.floor(rem / 60), s = rem % 60;
+    el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    el.classList.toggle('urgent', rem <= 60);
+  };
+  tick();
+}
+
+function updateDashboardAccess() {
+  const badge = document.getElementById('accessStatusBadge');
+  const label = document.getElementById('dashAccessLabel');
+  const sub   = document.getElementById('dashAccessSub');
+  if (!badge) return;
+  if (accessState.open) {
+    const rem = Math.max(0, Math.ceil((accessState.endTime - Date.now()) / 1000));
+    const m = Math.floor(rem / 60), s = rem % 60;
+    badge.style.background = '#dcfce7'; badge.style.color = '#16a34a';
+    badge.textContent = '● Open';
+    label.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    label.style.color = 'var(--success)';
+    if (sub) sub.textContent = accessState.subject + ' · Room ' + accessState.room;
+  } else {
+    badge.style.background = '#fef9c3'; badge.style.color = '#b45309';
+    badge.textContent = 'Closed';
+    label.textContent = 'Locked';
+    label.style.color = 'var(--text)';
+    if (sub) sub.textContent = 'No session active';
+  }
+}
+
+// ════════════════════ STUDENT MARK PAGE ════════════════════
+let studentMarkDone = false;
+
+function renderMarkPage() {
+  const el = document.getElementById('markAttContent');
+  if (!currentUser) return;
+
+  if (!accessState.open) {
+    el.innerHTML = `
+      <div class="mark-locked">
+        <div class="mark-locked-icon">🔒</div>
+        <h3>Attendance is Closed</h3>
+        <p>Your teacher hasn't opened the attendance window yet.<br>Wait for notification and come back here to mark your presence.</p>
+        <div style="margin-top:1.5rem;padding:1rem;background:var(--surface);border-radius:12px;font-size:.82rem;color:var(--muted)">
+          📢 The attendance window will appear here automatically when your teacher opens it.
+        </div>
+      </div>`;
+    return;
+  }
+
+  if (studentMarkDone && currentUser.role === 'student') {
+    el.innerHTML = `
+      <div class="mark-locked" style="border:2px solid var(--success)">
+        <div class="mark-locked-icon">✅</div>
+        <h3 style="color:var(--success)">Attendance Marked Successfully!</h3>
+        <p>${accessState.subject} · ${new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</p>
+        <div style="margin-top:1rem"><span class="badge badge-green" style="font-size:.9rem;padding:.4rem 1rem">Verified & Recorded</span></div>
+      </div>`;
+    return;
+  }
+
+  const rem = Math.max(0, Math.ceil((accessState.endTime - Date.now()) / 1000));
+  const m = Math.floor(rem / 60), s = rem % 60;
+
+  el.innerHTML = `
+    <div class="mark-open">
+      <div class="mark-open-header">
+        <h3>🔓 ${accessState.subject}</h3>
+        <p>Room ${accessState.room} · Time remaining: ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}</p>
+      </div>
+      <div class="mark-steps">
+
+        <!-- Step 1: Identity -->
+        <div class="mark-step ${markStep >= 0 ? 'active' : ''} ${markStep > 0 ? 'done' : ''}" id="mstep1">
+          <div class="mark-step-header">
+            <div class="step-num">${markStep > 0 ? '✓' : '1'}</div>
+            <div class="step-label">Confirm Your Identity</div>
+            ${markStep > 0 ? '<span class="badge badge-green" style="margin-left:auto">Done</span>' : ''}
+          </div>
+          ${markStep === 0 ? `
+          <div style="font-size:.85rem;color:var(--muted);margin-bottom:.75rem">Your name and roll number will be verified.</div>
+          <div style="background:var(--surface);border-radius:10px;padding:.9rem;display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem">
+            <div class="s-avatar" style="background:${currentUser.role==='student'?'#dbeafe':'#dcfce7'};color:${currentUser.role==='student'?'#1e40af':'#166534'};width:40px;height:40px">${currentUser.initials}</div>
+            <div><div style="font-weight:700">${currentUser.name}</div><div style="font-size:.78rem;color:var(--muted)">${currentUser.title}</div></div>
+          </div>
+          <button class="ac-btn blue" onclick="advanceMarkStep(1)">✅ Confirm — This is me</button>` : ''}
+        </div>
+
+        <!-- Step 2: Camera -->
+        <div class="mark-step ${markStep >= 1 ? 'active' : ''} ${markStep > 1 ? 'done' : ''}" id="mstep2">
+          <div class="mark-step-header">
+            <div class="step-num">${markStep > 1 ? '✓' : '2'}</div>
+            <div class="step-label">📷 Camera Face Verification</div>
+            ${markStep > 1 ? '<span class="badge badge-green" style="margin-left:auto">Done</span>' : ''}
+          </div>
+          ${markStep === 1 ? `
+          <div style="font-size:.85rem;color:var(--muted);margin-bottom:.75rem">Allow camera access and look directly at the screen.</div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:.75rem">
+            <div id="markCamWrap" style="width:160px;height:160px;border-radius:14px;border:3px solid var(--border);overflow:hidden;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative">😐</div>
+            <div id="markCamStatus" style="font-size:.82rem;color:var(--muted)">Click below to start camera</div>
+            <div style="display:flex;gap:.5rem">
+              <button class="ac-btn blue" onclick="startMarkCamera()">📷 Start Camera</button>
+              <button class="ac-btn gray" onclick="advanceMarkStep(2)">Skip (Demo)</button>
+            </div>
+          </div>` : ''}
+        </div>
+
+        <!-- Step 3: Submit -->
+        <div class="mark-step ${markStep >= 2 ? 'active' : ''} ${markStep > 2 ? 'done' : ''}" id="mstep3">
+          <div class="mark-step-header">
+            <div class="step-num">${markStep > 2 ? '✓' : '3'}</div>
+            <div class="step-label">✅ Submit Attendance</div>
+          </div>
+          ${markStep === 2 ? `
+          <div style="font-size:.85rem;color:var(--muted);margin-bottom:.75rem">All steps verified. Click below to submit your attendance.</div>
+          <div style="background:var(--success-bg);border:1px solid var(--success);border-radius:10px;padding:1rem;margin-bottom:.75rem;font-size:.82rem">
+            <div style="font-weight:700;color:var(--success);margin-bottom:.4rem">✅ Verified:</div>
+            <div>👤 Identity confirmed</div>
+            <div>📷 Face matched via camera</div>
+            <div>📍 GPS + Wi-Fi: Campus network detected</div>
+          </div>
+          <button class="ac-btn green" style="width:100%;justify-content:center;padding:.75rem;font-size:.95rem" onclick="submitAttendance()">🎓 Submit Attendance</button>` : ''}
+        </div>
+
+      </div>
+    </div>`;
+}
+
+function advanceMarkStep(to) {
+  markStep = to;
+  renderMarkPage();
+}
+
+function startMarkCamera() {
+  const wrap = document.getElementById('markCamWrap');
+  const status = document.getElementById('markCamStatus');
+  if (!wrap) return;
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } }).then(stream => {
+    cameraStream = stream;
+    wrap.innerHTML = `<video autoplay muted playsinline style="width:100%;height:100%;object-fit:cover;border-radius:10px"></video>`;
+    wrap.querySelector('video').srcObject = stream;
+    if (status) status.textContent = 'Camera active — face detected ✅';
+    setTimeout(() => advanceMarkStep(2), 3000);
+  }).catch(() => {
+    if (status) status.textContent = 'Camera denied — use Skip (Demo) to continue';
+    showToast('Camera access denied. Use demo mode.', 'error');
+  });
+}
+
+function submitAttendance() {
+  stopCamera();
+  studentMarkDone = true;
+  markStep = 0;
+  renderMarkPage();
+  showToast(`✅ Attendance marked for ${accessState.subject}!`, 'success');
+}
+
+function stopCamera() {
+  if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
+}
+
+// ════════════════════ BIOMETRIC CAMERA ════════════════════
+function startCamera() {
+  const wrap = document.getElementById('cameraWrap');
+  const frame = document.getElementById('faceFrame');
+  const stat  = document.getElementById('faceStatus');
+  const sub   = document.getElementById('faceSub');
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } }).then(stream => {
+    cameraStream = stream;
+    wrap.style.display = 'block';
+    frame.style.display = 'none';
+    wrap.querySelector('video').srcObject = stream;
+    stat.textContent = '📷 Camera active — detecting face…';
+    sub.textContent  = 'Hold still for face recognition';
+    setTimeout(() => {
+      const name = STUDENTS[Math.floor(Math.random() * STUDENTS.length)].name;
+      stat.textContent = `✅ ${name} — Face Recognized!`;
+      sub.textContent  = '14 landmarks matched · Liveness confirmed';
+      addBioLog(name, 'FACE', (95 + Math.random() * 4).toFixed(1) + '%');
+      showToast(`Face recognized: ${name}`, 'success');
+    }, 3000);
+  }).catch(() => {
+    showToast('Camera access denied. Use Demo Mode instead.', 'error');
+    stat.textContent = 'Camera denied — try Demo Mode';
+  });
+}
+
+function startFingerprint() {
+  const ring = document.getElementById('fpRing');
+  const stat = document.getElementById('fpStatus');
+  const sub  = document.getElementById('fpSub');
+  ring.classList.remove('success','fail');
+  ring.classList.add('scanning');
+  stat.textContent = 'Scanning fingerprint…';
+  sub.textContent  = 'Hold still…';
+  setTimeout(() => {
+    const ok = Math.random() > 0.2;
+    ring.classList.remove('scanning');
+    ring.classList.add(ok ? 'success' : 'fail');
+    if (ok) {
+      const name = STUDENTS[Math.floor(Math.random() * STUDENTS.length)].name;
+      stat.textContent = `✅ ${name} — Verified!`;
+      sub.textContent  = 'Fingerprint matched · Attendance marked';
+      addBioLog(name, 'FINGER', (96 + Math.random() * 3).toFixed(1) + '%');
+      showToast(`Fingerprint verified: ${name}`, 'success');
+    } else {
+      stat.textContent = '❌ No match found';
+      sub.textContent  = 'Try again or use alternate method';
+      showToast('Fingerprint not recognized', 'error');
+    }
+  }, 2000);
+}
+
+function startFaceRecog() {
+  const frame = document.getElementById('faceFrame');
+  const stat  = document.getElementById('faceStatus');
+  const sub   = document.getElementById('faceSub');
+  const lm    = document.getElementById('faceLandmarks');
+  frame.style.borderColor = 'var(--accent)';
+  if (frame.style.fontSize) frame.style.fontSize = '5rem';
+  stat.textContent = 'Detecting face…';
+  sub.textContent  = 'Analyzing facial landmarks…';
+  setTimeout(() => {
+    frame.style.borderColor = 'var(--success)';
+    if (lm) lm.style.display = 'block';
+    const name = STUDENTS[Math.floor(Math.random() * STUDENTS.length)].name;
+    stat.textContent = `✅ ${name} — Recognized!`;
+    sub.textContent  = '14 landmarks matched · Liveness detected';
+    addBioLog(name, 'FACE', (95 + Math.random() * 4).toFixed(1) + '%');
+    showToast(`Face recognized: ${name}`, 'success');
+  }, 2000);
+}
+
+function addBioLog(name, method, conf) {
+  const time = new Date().toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
+  const tbody = document.getElementById('bioLog');
+  const init  = name.split(' ').map(n => n[0]).join('');
+  const row   = document.createElement('tr');
+  row.innerHTML = `
+    <td><div class="student-cell"><div class="s-avatar" style="background:#dbeafe;color:#1e40af">${init}</div><div><div class="s-name">${name}</div></div></div></td>
+    <td><span class="method-tag">${method}</span></td>
+    <td><span style="color:var(--success);font-weight:700">${conf}</span></td>
+    <td>${time}</td>
+    <td><span class="badge badge-green">Verified</span></td>`;
+  tbody.prepend(row);
+}
+
+// ════════════════════ TABLE BUILDERS ════════════════════
+function buildAttTable() {
+  const tbody = document.getElementById('attendanceTableBody');
+  const statuses = ['Present','Present','Late','Absent','Present','Present','Present','Absent'];
+  const methods  = ['CAMERA','FACE','CAMERA','—','BIO','CAMERA','CAMERA','—'];
+  const times    = ['10:02 AM','10:01 AM','10:09 AM','—','10:03 AM','10:04 AM','10:05 AM','—'];
+  tbody.innerHTML = STUDENTS.map((s, i) => {
+    const status = statuses[i] || 'Present';
+    const bc = status === 'Present' ? 'badge-green' : status === 'Late' ? 'badge-yellow' : 'badge-red';
+    return `<tr>
+      <td style="font-size:.78rem;color:var(--muted)">${i+1}</td>
+      <td><div class="student-cell"><div class="s-avatar" style="background:${s.color};color:${s.tc}">${s.name.split(' ').map(n=>n[0]).join('')}</div><div><div class="s-name">${s.name}</div><div class="s-id">${s.id}</div></div></div></td>
+      <td><span style="font-family:var(--mono);font-size:.8rem">${s.id}</span></td>
+      <td style="font-family:var(--mono);font-size:.8rem">${times[i]}</td>
+      <td><span class="method-tag">${methods[i]}</span></td>
+      <td><span class="badge ${bc}">${status}</span></td>
+      <td><button onclick="showToast('Updated ${s.name}','success')" style="font-size:.72rem;padding:.2rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-family:var(--font)">Edit</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function buildManualList() {
+  const el = document.getElementById('manualList');
+  const isStudent = currentUser && currentUser.role === 'student';
+  const warn = document.getElementById('manualAccessWarn');
+  const card = document.getElementById('manualCard');
+  if (warn) warn.style.display = isStudent ? 'flex' : 'none';
+  if (card) card.style.display = isStudent ? 'none' : 'block';
+  if (isStudent) return;
+  el.innerHTML = `<div class="manual-row header"><div>Student</div><div>Present</div><div>Absent</div><div>Late</div><div>Remarks</div></div>`;
+  STUDENTS.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'manual-row';
+    div.id = 'mrow-' + i;
+    div.innerHTML = `
+      <div class="student-cell">
+        <div class="s-avatar" style="background:${s.color};color:${s.tc};width:28px;height:28px;font-size:.7rem">${s.name.split(' ').map(n=>n[0]).join('')}</div>
+        <div><div class="s-name" style="font-size:.83rem">${s.name}</div><div class="s-id">${s.id}</div></div>
+      </div>
+      <div><button class="att-radio p sel" onclick="setStatus(${i},'p',this)">P</button></div>
+      <div><button class="att-radio a" onclick="setStatus(${i},'a',this)">A</button></div>
+      <div><button class="att-radio l" onclick="setStatus(${i},'l',this)">L</button></div>
+      <input type="text" class="form-input" style="padding:.35rem .6rem;font-size:.78rem;height:32px" placeholder="Note…">`;
+    el.appendChild(div);
+  });
+}
+
+function setStatus(i, type, btn) {
+  const row = document.getElementById('mrow-' + i);
+  row.querySelectorAll('.att-radio').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+function markAll(type) {
+  STUDENTS.forEach((s, i) => {
+    const row = document.getElementById('mrow-' + i);
+    if (!row) return;
+    row.querySelectorAll('.att-radio').forEach(b => b.classList.remove('sel'));
+    row.querySelectorAll('.att-radio')[type === 'p' ? 0 : type === 'a' ? 1 : 2].classList.add('sel');
+  });
+  showToast(`All students marked as ${type === 'p' ? 'Present' : type === 'a' ? 'Absent' : 'Late'}`, 'info');
+}
+
+function buildStudentTable() {
+  const tbody = document.getElementById('studentTableBody');
+  const lastSeen = ['Today 10:02 AM','Today 10:04 AM','25 Mar 9:00 AM','Today 10:09 AM','Today 10:01 AM','24 Mar 2:00 PM','Today 10:05 AM','Today 9:58 AM'];
+  tbody.innerHTML = STUDENTS.map((s, i) => {
+    const risk = s.pct < 75;
+    return `<tr>
+      <td><div class="student-cell"><div class="s-avatar" style="background:${s.color};color:${s.tc}">${s.name.split(' ').map(n=>n[0]).join('')}</div><div class="s-name">${s.name}</div></div></td>
+      <td><span style="font-family:var(--mono);font-size:.8rem">${s.id}</span></td>
+      <td><div style="display:flex;align-items:center;gap:.75rem"><div style="flex:1;max-width:80px;height:6px;background:var(--border);border-radius:3px;overflow:hidden"><div style="width:${s.pct}%;height:100%;background:${s.pct>=80?'var(--success)':s.pct>=75?'var(--warning)':'var(--danger)'};border-radius:3px"></div></div><span style="font-weight:700;font-size:.82rem;color:${s.pct>=80?'var(--success)':s.pct>=75?'var(--warning)':'var(--danger)'}">${s.pct}%</span></div></td>
+      <td><span style="font-size:.78rem;background:var(--surface);padding:.2rem .6rem;border-radius:5px;border:1px solid var(--border)">${s.gate}</span></td>
+      <td><span class="badge ${risk ? 'badge-red' : 'badge-green'}">${risk ? 'At Risk' : 'Good'}</span></td>
+      <td style="font-size:.8rem;color:var(--muted)">${lastSeen[i] || 'Today'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function buildCalendar() {
+  const grid = document.getElementById('calGrid');
+  const days = [];
+  for (let i = 0; i < 6; i++) days.push({ type:'empty' });
+  const statuses = ['holiday','present','present','present','present','holiday','holiday','absent','present','present','present','present','holiday','holiday','present','present','present','present','present','holiday','holiday','present','present','present','present','present','holiday','holiday','present','present','present'];
+  for (let d = 1; d <= 31; d++) days.push({ day:d, type: d > 26 ? 'future' : (statuses[d-1]||'present'), today: d === 26 });
+  grid.innerHTML = days.map(d => {
+    if (d.type === 'empty') return `<div class="cal-day empty"></div>`;
+    return `<div class="cal-day ${d.type}${d.today?' today':''}" title="${d.type}">${d.day}</div>`;
+  }).join('');
+}
+
+// ════════════════════ GATE PREP AI ════════════════════
+function buildGateGrid() {
+  const grid = document.getElementById('gateGrid');
+  const filter = document.getElementById('gateSubjectFilter');
+  const sel = filter ? filter.value : 'all';
+  const subjects = sel === 'all' ? Object.keys(GATE_TASKS) : [sel];
+
+  grid.innerHTML = subjects.map(key => {
+    const s = GATE_TASKS[key];
+    return `
+    <div class="gate-card">
+      <div class="gate-card-head">
+        <div style="width:40px;height:40px;border-radius:10px;background:${s.bg};display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0">${s.icon}</div>
+        <div style="flex:1">
+          <div style="font-weight:800;font-size:.88rem">${s.label}</div>
+          <span class="gate-subject-tag" style="background:${s.bg};color:${s.color};margin-top:3px;display:inline-block">GATE CSE</span>
+        </div>
+        <span class="badge badge-blue">AI</span>
+      </div>
+      <div class="gate-tasks">
+        ${s.tasks.map(t => `
+        <div class="gate-task">
+          <div class="gate-task-top">
+            <span class="gate-difficulty diff-${t.diff}">${t.diff.toUpperCase()}</span>
+            <span style="font-size:.7rem;color:var(--muted);margin-left:auto">⏱ ${t.time}</span>
+            <span style="font-size:.68rem;font-weight:700;color:${s.color};background:${s.bg};padding:.1rem .45rem;border-radius:4px;margin-left:.4rem">${t.marks}</span>
+          </div>
+          <div style="font-weight:700;font-size:.85rem;margin:.3rem 0 .2rem">${t.title}</div>
+          <div style="font-size:.78rem;color:var(--muted);line-height:1.5">${t.desc}</div>
+          <button onclick="showToast('Added to study plan: ${t.title}','success')" style="margin-top:.5rem;font-size:.72rem;padding:.2rem .65rem;border-radius:5px;border:1px solid ${s.color};color:${s.color};background:${s.bg};cursor:pointer;font-family:var(--font);font-weight:700">+ Add to Plan</button>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ════════════════════ ANTI-PROXY ════════════════════
+function initAntiProxy() {
+  gpsVerified = false; wifiVerified = false;
+  apScanCount = 0; apPresent = 0; apBlocked = 0;
+  const pid = document.getElementById('apPresent');
+  const bid = document.getElementById('apBlocked');
+  const pend = document.getElementById('apPending');
+  const cnt = document.getElementById('apScanCount');
+  if (pid) pid.textContent = '0';
+  if (bid) bid.textContent = '0';
+  if (pend) pend.textContent = '42';
+  if (cnt) cnt.textContent = '0';
+  setTimeout(() => {
+    const g = document.getElementById('gpsRing'); if(g) g.style.borderColor = 'var(--primary-light)';
+    const gs = document.getElementById('gpsStatus'); if(gs) gs.textContent = 'Triangulating position…';
+    const gsb = document.getElementById('gpsSub'); if(gsb) gsb.textContent = 'Cross-checking GPS + cell tower data';
+  }, 500);
+  setTimeout(() => {
+    gpsVerified = true;
+    const g = document.getElementById('gpsRing'); if(g){g.style.borderColor='var(--success)';g.textContent='✅';}
+    const gs = document.getElementById('gpsStatus'); if(gs) gs.textContent = 'Location Confirmed ✔';
+    const gsb = document.getElementById('gpsSub'); if(gsb) gsb.textContent = 'Inside campus · 18m from Room 301';
+    const gb = document.getElementById('gpsBadge'); if(gb){gb.style.background='var(--success-bg)';gb.style.color='var(--success)';gb.textContent='✔ Confirmed';}
+    checkAllLayersReady();
+  }, 2200);
+  setTimeout(() => {
+    const w = document.getElementById('wifiRing'); if(w) w.style.borderColor = 'var(--primary-light)';
+    const ws = document.getElementById('wifiStatus'); if(ws) ws.textContent = 'Matching AP signature…';
+    const wsb = document.getElementById('wifiSub'); if(wsb) wsb.textContent = 'Verifying MAC: A4:3E:51:B2:7C:01';
+  }, 900);
+  setTimeout(() => {
+    wifiVerified = true;
+    const w = document.getElementById('wifiRing'); if(w){w.style.borderColor='var(--success)';w.textContent='✅';}
+    const ws = document.getElementById('wifiStatus'); if(ws) ws.textContent = 'Campus Network Confirmed ✔';
+    const wsb = document.getElementById('wifiSub'); if(wsb) wsb.textContent = 'SJBIT-EDU-SECURE · Room 301 AP';
+    const wb = document.getElementById('wifiBadge'); if(wb){wb.style.background='var(--success-bg)';wb.style.color='var(--success)';wb.textContent='✔ Confirmed';}
+    checkAllLayersReady();
+  }, 3100);
+}
+
+function checkAllLayersReady() {
+  if (!gpsVerified || !wifiVerified) return;
+  const ls = document.getElementById('liveStatus'); if(ls) ls.textContent = 'Turn head left & blink twice…';
+  const lb = document.getElementById('liveSub'); if(lb) lb.textContent = 'Anti-spoof liveness challenge active';
+  const lf = document.getElementById('liveFrame'); if(lf) lf.style.borderColor = 'var(--accent)';
+  const lbg = document.getElementById('liveBadge'); if(lbg){lbg.style.background='var(--primary-glow)';lbg.style.color='var(--primary)';lbg.textContent='⟳ Scanning';}
+  setTimeout(() => {
+    if(lf){lf.style.borderColor='var(--success)';lf.textContent='😊';}
+    if(ls) ls.textContent = 'Liveness Confirmed ✔';
+    if(lb) lb.textContent = '14 landmarks matched · No spoof detected';
+    if(lbg){lbg.style.background='var(--success-bg)';lbg.style.color='var(--success)';lbg.textContent='✔ Live';}
+    const sb = document.getElementById('apSessionBadge'); if(sb) sb.textContent = '✅ All 3 Layers Active';
+  }, 1800);
+}
+
+function simulateAntiProxy(blocked) {
+  const name = apNames[apScanCount % apNames.length];
+  const time = new Date().toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
+  apScanCount++;
+  const cnt = document.getElementById('apScanCount'); if(cnt) cnt.textContent = apScanCount;
+  const feed = document.getElementById('apFeedBody');
+  if (feed && feed.querySelector('[style*="Awaiting"]')) feed.innerHTML = '';
+  const entry = document.createElement('div');
+  entry.style.cssText = 'display:flex;align-items:center;gap:.7rem;padding:.6rem .75rem;background:#fff;border-radius:9px;border:1px solid var(--border);font-size:.8rem;animation:slideIn .3s ease';
+  if (blocked) {
+    apBlocked++;
+    const bid = document.getElementById('apBlocked'); if(bid) bid.textContent = apBlocked;
+    const reason = blockReasons[Math.floor(Math.random() * blockReasons.length)];
+    entry.innerHTML = `<span style="font-size:1.1rem">🚫</span><div style="flex:1"><div style="font-weight:700;color:var(--danger)">${name}</div><div style="font-size:.7rem;color:var(--muted)">${reason}</div></div><div style="font-family:var(--mono);font-size:.7rem;color:var(--muted)">${time}</div><span class="badge badge-red">Blocked</span>`;
+    showToast(`🚫 Proxy blocked: ${name}`, 'error');
+  } else {
+    apPresent++;
+    const pid = document.getElementById('apPresent'); if(pid) pid.textContent = apPresent;
+    const pend = document.getElementById('apPending'); if(pend) pend.textContent = Math.max(0, 42 - apPresent - apBlocked);
+    entry.innerHTML = `<span style="font-size:1.1rem">✅</span><div style="flex:1"><div style="font-weight:700">${name}</div><div style="font-size:.7rem;color:var(--muted)">GPS ✔ · Wi-Fi ✔ · Liveness ✔</div></div><div style="font-family:var(--mono);font-size:.7rem;color:var(--muted)">${time}</div><span class="badge badge-green">Verified</span>`;
+    showToast(`✅ Verified: ${name}`, 'success');
+  }
+  if (feed) feed.prepend(entry);
+}
+
+// ════════════════════ TOAST ════════════════════
+function showToast(msg, type = 'info') {
+  const c = document.getElementById('toastContainer');
+  const icons = { success:'✅', error:'❌', info:'ℹ️' };
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+  c.appendChild(t);
+  setTimeout(() => { t.style.opacity='0'; t.style.transform='translateX(20px)'; t.style.transition='all .3s'; setTimeout(() => t.remove(), 300); }, 3500);
+}
+
+// ════════════════════ MODAL ════════════════════
+function openModal(title, desc, bodyHTML, onConfirm) {
+  document.getElementById('modalTitle').textContent = title || 'Confirm';
+  document.getElementById('modalDesc').textContent  = desc  || '';
+  document.getElementById('modalBody').innerHTML    = bodyHTML || '';
+  const confirmBtn = document.getElementById('modalConfirmBtn');
+  confirmBtn.onclick = () => { closeModal(); if (onConfirm) onConfirm(); };
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+
+// ════════════════════ INIT ════════════════════
+updateClock();
+</script>
+</body>
+</html>
